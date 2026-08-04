@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#e2231f">
+<title>McMunn Admin &mdash; Workshop &amp; Tyre Modules</title>
+<style>
+  :root{
+    --red:#e2231f;
+    --red-dark:#c11c19;
+    --red-hover:#cf201c;
+    --sidebar-ink:#f7d9d8;
+    --active:#1c1c1c;
+    --content-bg:#f4f6f9;
+    --ink:#212529;
+    --sub:#6c757d;
+    --line:#dee2e6;
+    --line-soft:#eceef1;
+    --card:#ffffff;
+    --field:#ffffff;
+
+    --blue:#2b9bf4; --blue-d:#1683de;
+    --teal:#17a7bd; --teal-d:#138b9e;
+    --amber:#ffc107; --amber-d:#e0a800; --amber-ink:#3d2f00;
+    --green:#28a745; --green-d:#208638;
+
+    --badge-open:#6c757d; --badge-open-bg:#e9ecef;
+    --badge-prog:#1683de; --badge-prog-bg:#e1f0fd;
+    --badge-await:#b7791f; --badge-await-bg:#fbeecb;
+    --badge-done:#208638; --badge-done-bg:#dcf3e3;
+    --badge-inv:#6f42c1; --badge-inv-bg:#ece4f9;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:"Source Sans 3","Source Sans Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+    background:var(--content-bg);color:var(--ink);-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.45;
+  }
+  a{color:inherit;text-decoration:none}
+
+  .app{display:flex;min-height:100vh}
+
+  /* ---------- sidebar ---------- */
+  .sidebar{width:250px;flex:0 0 250px;background:var(--red);color:#fff;display:flex;flex-direction:column;position:fixed;inset:0 auto 0 0;z-index:40;transition:transform .2s ease}
+  .brand{background:#fff;padding:14px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .brand svg{width:118px;height:auto;display:block}
+  .brand .bsub{font-size:11px;color:#2f3a45;font-weight:600}
+  .snav{list-style:none;margin:0;padding:8px 6px;display:flex;flex-direction:column;gap:1px;overflow-y:auto;flex:1}
+  .snav::-webkit-scrollbar{width:6px}.snav::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18);border-radius:4px}
+  .snav a{display:flex;align-items:center;gap:12px;padding:12px 12px;border-radius:5px;color:#fff;font-size:14.5px;font-weight:500;cursor:pointer;transition:background .12s}
+  .snav a:hover{background:var(--red-hover)}
+  .snav a.active{background:var(--active);color:#fff}
+  .snav a .ic{width:20px;display:flex;justify-content:center;flex:0 0 auto}
+  .snav a .ic svg{width:17px;height:17px}
+  .snav a .lbl{flex:1;min-width:0}
+  .snav a .car{opacity:.85}
+  .snav a .car svg{width:12px;height:12px;display:block}
+  .snav .divider{height:1px;background:rgba(255,255,255,.18);margin:8px 10px}
+  .snav .newtag{font-size:9.5px;font-weight:800;background:#fff;color:var(--red-dark);padding:2px 6px;border-radius:4px;letter-spacing:.04em}
+
+  /* ---------- main ---------- */
+  .main{flex:1;margin-left:250px;display:flex;flex-direction:column;min-height:100vh;min-width:0;transition:margin .2s ease}
+  .topbar{height:56px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 18px;position:sticky;top:0;z-index:20}
+  .topbar .burger{background:none;border:0;cursor:pointer;color:#4a4a4a;padding:8px;border-radius:5px;display:flex}
+  .topbar .burger:hover{background:#f0f0f0}
+  .topbar .burger svg{width:20px;height:20px}
+  .topbar .tr{display:flex;align-items:center;gap:6px}
+  .topbar .ticon{background:none;border:0;cursor:pointer;color:#4a4a4a;padding:8px;border-radius:5px;display:flex}
+  .topbar .ticon:hover{background:#f0f0f0}
+  .topbar .ticon svg{width:19px;height:19px}
+
+  .pagehead{display:flex;align-items:center;justify-content:space-between;padding:16px 22px 6px}
+  .pagehead h1{margin:0;font-size:23px;font-weight:500;color:#3a3f44}
+  .crumb{font-size:13.5px;color:var(--sub)}
+  .crumb a{color:var(--blue-d)}
+  .crumb .sep{margin:0 6px;color:#c4c9ce}
+
+  .content{padding:10px 22px 30px;flex:1}
+  .footer{background:#fff;border-top:1px solid var(--line);padding:12px 22px;font-size:13px;color:var(--sub);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+  .footer b{color:#3a3f44}
+  .footer a{color:var(--blue-d);font-weight:600}
+
+  .view{display:none}
+  .view.active{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.view.active{animation:none}}
+
+  /* ---------- stat cards ---------- */
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:10px 0 6px}
+  @media (max-width:1150px){.cards{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.cards{grid-template-columns:1fr}}
+  .scard{border-radius:6px;color:#fff;position:relative;overflow:hidden;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .scard .body{padding:16px 18px 14px}
+  .scard .num{font-size:38px;font-weight:800;line-height:1;letter-spacing:-.02em}
+  .scard .lbl{font-size:15px;font-weight:600;margin-top:6px}
+  .scard .ghost{position:absolute;right:12px;top:14px;opacity:.22}
+  .scard .ghost svg{width:66px;height:66px}
+  .scard .more{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;font-size:13px;font-weight:600;background:rgba(0,0,0,.12)}
+  .scard .more svg{width:14px;height:14px}
+  .scard.blue{background:var(--blue)}.scard.blue .more{background:var(--blue-d)}
+  .scard.teal{background:var(--teal)}.scard.teal .more{background:var(--teal-d)}
+  .scard.amber{background:var(--amber);color:var(--amber-ink)}.scard.amber .more{background:var(--amber-d)}
+  .scard.green{background:var(--green)}.scard.green .more{background:var(--green-d)}
+  .scard:hover .more{filter:brightness(.94)}
+
+  /* ---------- panels / tables ---------- */
+  .sec-title{font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--sub);margin:26px 2px 12px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media (max-width:1000px){.grid2{grid-template-columns:1fr}}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line-soft)}
+  .panel-head h2{margin:0;font-size:16px;font-weight:700}
+  .panel-head .h-ic{width:30px;height:30px;border-radius:6px;background:#fde7e6;color:var(--red);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .panel-head .h-ic svg{width:17px;height:17px}
+  .panel-head .h-left{display:flex;align-items:center;gap:10px}
+  .panel-body{padding:14px 16px}
+  .panel-foot{padding:11px 16px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--sub);display:flex;align-items:center;justify-content:space-between}
+
+  .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .toolbar .grow{flex:1;min-width:150px}
+  .search{position:relative;flex:1;min-width:180px}
+  .search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:#9aa0a6}
+  .search input{width:100%;border:1px solid var(--line);border-radius:6px;padding:9px 12px 9px 34px;font:inherit;font-size:14px;background:#fff}
+  .search input:focus{outline:2px solid var(--blue);outline-offset:-1px;border-color:var(--blue)}
+
+  table.tbl{width:100%;border-collapse:collapse;font-size:14px}
+  table.tbl th{text-align:left;font-weight:700;color:#495057;background:#f8f9fa;padding:11px 12px;border-bottom:2px solid var(--line);white-space:nowrap;font-size:12.5px;letter-spacing:.02em;text-transform:uppercase}
+  table.tbl td{padding:11px 12px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+  table.tbl tr:last-child td{border-bottom:0}
+  table.tbl tbody tr{transition:background .1s}
+  table.tbl tbody tr:hover{background:#fbfbfc}
+  .tbl .mono{font-variant-numeric:tabular-nums;font-weight:700;color:#495057}
+  .tbl .prim{font-weight:700}
+  .tbl .muted{color:var(--sub);font-size:13px}
+  .tbl-wrap{overflow-x:auto}
+
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+  .badge .bd{width:7px;height:7px;border-radius:50%;background:currentColor}
+  .badge.open{color:var(--badge-open);background:var(--badge-open-bg)}
+  .badge.prog{color:var(--badge-prog);background:var(--badge-prog-bg)}
+  .badge.await{color:var(--badge-await);background:var(--badge-await-bg)}
+  .badge.done{color:var(--badge-done);background:var(--badge-done-bg)}
+  .badge.inv{color:var(--badge-inv);background:var(--badge-inv-bg)}
+
+  .prio{font-size:12px;font-weight:700}
+  .prio.low{color:var(--sub)}.prio.med{color:#b7791f}.prio.urg{color:var(--red)}
+
+  .rowacts{display:flex;gap:6px}
+  .iconbtn{width:30px;height:30px;border-radius:5px;border:1px solid var(--line);background:#fff;color:#5a6169;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.12s}
+  .iconbtn:hover{background:#f1f3f5;color:var(--ink)}
+  .iconbtn.v:hover{border-color:var(--blue);color:var(--blue-d)}
+  .iconbtn.e:hover{border-color:var(--amber-d);color:var(--amber-d)}
+  .iconbtn svg{width:15px;height:15px}
+
+  .btn{border:0;border-radius:6px;padding:9px 16px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.12s}
+  .btn svg{width:16px;height:16px}
+  .btn.red{background:var(--red);color:#fff}.btn.red:hover{background:var(--red-dark)}
+  .btn.grey{background:#e9ecef;color:#41474d}.btn.grey:hover{background:#dee2e6}
+  .btn.ghost{background:#fff;border:1px solid var(--line);color:#41474d}.btn.ghost:hover{background:#f5f6f7}
+  .select-lite{border:1px solid var(--line);border-radius:6px;padding:9px 30px 9px 12px;font:inherit;font-size:14px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;appearance:none;-webkit-appearance:none;cursor:pointer}
+
+  /* info boxes (dashboard workshop) */
+  .infoboxes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media (max-width:1000px){.infoboxes{grid-template-columns:1fr}}
+  .infobox{background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;gap:14px;padding:14px 16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .infobox .ib-ic{width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;flex:0 0 auto}
+  .infobox .ib-ic svg{width:24px;height:24px}
+  .infobox .ib-num{font-size:24px;font-weight:800;line-height:1}
+  .infobox .ib-lbl{font-size:13px;color:var(--sub);font-weight:600;margin-top:3px}
+  .ib-red{background:var(--red)}.ib-blue{background:var(--blue)}.ib-green{background:var(--green)}
+
+  /* ---------- modal ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(20,24,28,.5);z-index:60;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:8px;width:100%;max-width:660px;box-shadow:0 24px 60px -12px rgba(0,0,0,.4);animation:pop .18s ease}
+  .modal.wide{max-width:760px}
+  @keyframes pop{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line);background:var(--red);color:#fff;border-radius:8px 8px 0 0}
+  .modal-head h3{margin:0;font-size:17px;font-weight:700}
+  .modal-head .x{background:none;border:0;color:#fff;font-size:24px;line-height:1;cursor:pointer;opacity:.9;padding:0 4px}
+  .modal-head .x:hover{opacity:1}
+  .modal-body{padding:20px;max-height:66vh;overflow-y:auto}
+  .modal-foot{padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;background:#f8f9fa;border-radius:0 0 8px 8px}
+
+  .frow{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .frow.one{grid-template-columns:1fr}
+  @media (max-width:560px){.frow{grid-template-columns:1fr}}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:13px;font-weight:700;color:#41474d;margin-bottom:6px}
+  .field label .opt{color:#9aa0a6;font-weight:600}
+  .field .control{width:100%;border:1px solid var(--line);border-radius:6px;padding:10px 12px;font:inherit;font-size:14px;background:#fff;appearance:none;-webkit-appearance:none}
+  select.control{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
+  textarea.control{resize:vertical;min-height:72px}
+  .control:focus{outline:2px solid var(--red);outline-offset:-1px;border-color:var(--red)}
+
+  .segset{display:flex;gap:8px;flex-wrap:wrap}
+  .segset .opt-b{border:1px solid var(--line);background:#fff;border-radius:6px;padding:9px 14px;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;transition:.12s}
+  .segset .opt-b.on{background:#fde7e6;border-color:var(--red);color:var(--red-dark);font-weight:800}
+
+  .posgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;max-width:340px}
+  .posgrid .pos{border:1px solid var(--line);background:#fff;border-radius:6px;padding:10px 0;font-size:13px;font-weight:700;cursor:pointer;text-align:center;color:#5a6169;transition:.12s}
+  .posgrid .pos.on{background:var(--red);border-color:var(--red);color:#fff}
+
+  .partrow{display:grid;grid-template-columns:1fr 90px 36px;gap:8px;margin-bottom:8px}
+  .partrow .del{border:1px solid var(--line);background:#fff;color:#c0392b;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .partrow .del svg{width:15px;height:15px}
+  .addlink{background:none;border:0;color:var(--red);font:inherit;font-weight:700;font-size:13.5px;cursor:pointer;padding:2px 0;display:inline-flex;align-items:center;gap:6px}
+  .addlink svg{width:14px;height:14px}
+  .parts-empty{font-size:13px;color:var(--sub);font-style:italic;margin-bottom:8px}
+
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 22px}
+  .detail-grid .d-k{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--sub)}
+  .detail-grid .d-v{font-size:15px;font-weight:600;margin-top:2px}
+  .detail-grid .span2{grid-column:1/-1}
+
+  /* toast */
+  .toast{position:fixed;right:24px;bottom:24px;background:#1c1c1c;color:#fff;padding:13px 20px;border-radius:8px;font-size:14px;font-weight:600;z-index:80;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px);transition:.28s;box-shadow:0 12px 30px -8px rgba(0,0,0,.5)}
+  .toast .d{width:9px;height:9px;border-radius:50%;background:#4ade80}
+  .toast.show{opacity:1;transform:none}
+
+  .backdrop{display:none}
+  @media (max-width:860px){
+    .sidebar{transform:translateX(-100%)}
+    body.snav-open .sidebar{transform:none}
+    .main{margin-left:0}
+    body.snav-open .backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:35}
+  }
+  body.collapsed .sidebar{transform:translateX(-100%)}
+  body.collapsed .main{margin-left:0}
+  @media (max-width:860px){body.collapsed .main{margin-left:0}}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <svg viewBox="0 0 300 150" role="img" aria-label="McMunn">
+        <polygon points="14,140 54,140 104,20 64,20" fill="#2B2B2B"/>
+        <polygon points="70,140 108,140 130,66 150,110 170,66 192,140 230,140 196,20 168,20 150,64 132,20 104,20" fill="#e2231f"/>
+        <polygon points="246,140 286,140 236,20 196,20" fill="#2B2B2B"/>
+        <g transform="rotate(-71 92 78)">
+          <rect x="34" y="70" width="118" height="17" rx="2" fill="#3a3a3a"/>
+          <text x="93" y="83" font-family="Georgia,serif" font-style="italic" font-size="15" fill="#fff" text-anchor="middle" font-weight="700">McMunn</text>
+        </g>
+      </svg>
+      <div class="bsub">Sligo Plant Hire &amp; Haulage Ltd.</div>
+    </div>
+    <ul class="snav" id="snav">
+      <li><a class="active" data-view="dashboard"><span class="ic">%DASH%</span><span class="lbl">Dashboard</span></a></li>
+      <li><a data-stub="User Management"><span class="ic">%USERS%</span><span class="lbl">User Management</span><span class="car">%CARET%</span></a></li>
+      <li><a data-stub="Truck Management"><span class="ic">%TRUCK%</span><span class="lbl">Truck Management</span><span class="car">%CARET%</span></a></li>
+      <li><a data-stub="Load Management"><span class="ic">%LOAD%</span><span class="lbl">Load Management</span><span class="car">%CARET%</span></a></li>
+      <li><a data-stub="Parts"><span class="ic">%BOX%</span><span class="lbl">Parts</span><span class="car">%CARET%</span></a></li>
+      <li><a data-stub="Reports"><span class="ic">%REPORT%</span><span class="lbl">Reports</span><span class="car">%CARET%</span></a></li>
+      <li><a data-stub="Plant Machinery"><span class="ic">%PLANT%</span><span class="lbl">Plant Machinery</span><span class="car">%CARET%</span></a></li>
+      <li><a data-stub="Holidays"><span class="ic">%SUN%</span><span class="lbl">Holidays</span><span class="car">%CARET%</span></a></li>
+      <li><a data-stub="Reset Password"><span class="ic">%KEY%</span><span class="lbl">Reset Password</span></a></li>
+      <li class="divider"></li>
+      <li><a data-view="service"><span class="ic">%WRENCH%</span><span class="lbl">Machine Service Log</span></a></li>
+      <li><a data-view="tyre"><span class="ic">%TYRE%</span><span class="lbl">Tyre Fitter Sheets</span></a></li>
+    </ul>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+
+  <!-- ===================== MAIN ===================== -->
+  <div class="main">
+    <div class="topbar">
+      <button class="burger" id="burger" title="Toggle menu">%BURGER%</button>
+      <div class="tr">
+        <button class="ticon" data-stub="Notifications">%BELL%</button>
+        <button class="ticon" data-stub="Control panel">%GRID%</button>
+      </div>
+    </div>
+
+    <div class="pagehead">
+      <h1 id="pageTitle">Dashboard</h1>
+      <div class="crumb"><a data-view="dashboard">Home</a><span class="sep">/</span><span id="crumbNow">Dashboard v1</span></div>
+    </div>
+
+    <div class="content">
+      <!-- ============ DASHBOARD ============ -->
+      <section class="view active" data-view="dashboard">
+        <div class="cards">
+          <div class="scard blue" data-view="service">
+            <div class="body"><div class="num">37889</div><div class="lbl">Jobs Completed</div><span class="ghost">%WRENCH_BIG%</span></div>
+            <div class="more">More info %ARROW%</div>
+          </div>
+          <div class="scard teal" data-stub="Drivers">
+            <div class="body"><div class="num">28</div><div class="lbl">Total Drivers</div><span class="ghost">%USERADD%</span></div>
+            <div class="more">More info %ARROW%</div>
+          </div>
+          <div class="scard amber" data-stub="Checklists">
+            <div class="body"><div class="num">5</div><div class="lbl">Checklist Completed</div><span class="ghost">%BAG%</span></div>
+            <div class="more">More info %ARROW%</div>
+          </div>
+          <div class="scard green" data-stub="Customers">
+            <div class="body"><div class="num">490</div><div class="lbl">Customers</div><span class="ghost">%CHART%</span></div>
+            <div class="more">More info %ARROW%</div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============ SERVICE LOG ============ -->
+      <section class="view" data-view="service">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="h-left"><span class="h-ic">%WRENCH%</span><h2>Machine Service Log &mdash; Job Cards</h2></div>
+            <button class="btn red" id="addSvc">%PLUS% New Job Card</button>
+          </div>
+          <div class="panel-body">
+            <div class="toolbar">
+              <div class="search">%SEARCH%<input type="text" id="svcSearch" placeholder="Search machine, mechanic or ref&hellip;"></div>
+              <select class="select-lite" id="svcFilter">
+                <option value="">All statuses</option>
+                <option>In Progress</option><option>Awaiting Parts</option><option>Completed</option>
+              </select>
+            </div>
+            <div class="tbl-wrap">
+              <table class="tbl">
+                <thead><tr><th>Job Card</th><th>Machine / Fleet</th><th>Type</th><th>Mechanic</th><th>Priority</th><th>Status</th><th>Date</th><th></th></tr></thead>
+                <tbody id="svcBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel-foot"><span id="svcCountLbl">Showing 0 job cards</span></div>
+        </div>
+      </section>
+
+      <!-- ============ TYRE SHEETS ============ -->
+      <section class="view" data-view="tyre">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="h-left"><span class="h-ic">%TYRE%</span><h2>Tyre Fitter Job Sheets</h2></div>
+            <button class="btn red" id="addTyre">%PLUS% New Job Sheet</button>
+          </div>
+          <div class="panel-body">
+            <div class="toolbar">
+              <div class="search">%SEARCH%<input type="text" id="tyreSearch" placeholder="Search reg, fitter or ref&hellip;"></div>
+              <select class="select-lite" id="tyreFilter">
+                <option value="">All types</option>
+                <option>New Fit</option><option>Puncture Repair</option><option>Rotation</option><option>Inspection</option>
+              </select>
+            </div>
+            <div class="tbl-wrap">
+              <table class="tbl">
+                <thead><tr><th>Job Sheet</th><th>Vehicle Reg</th><th>Service</th><th>Positions</th><th>Tyre Size</th><th>Fitter</th><th>Status</th><th>Date</th><th></th></tr></thead>
+                <tbody id="tyreBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel-foot"><span id="tyreCountLbl">Showing 0 job sheets</span></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer">
+      <span>Copyright &copy; 2023 <b>Sligo Plant Hire</b>. All rights reserved.</span>
+      <span>Created by <a data-stub="DMC Consultancy">DMC Consultancy</a></span>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODALS ===================== -->
+<div class="overlay" id="overlay">
+  <!-- Service add -->
+  <div class="modal wide" id="mSvc" style="display:none">
+    <div class="modal-head"><h3>New Service Job Card</h3><button class="x" data-close>&times;</button></div>
+    <div class="modal-body">
+      <div class="frow">
+        <div class="field"><label>Machine / Fleet No.</label><select class="control" id="fSvcMachine"></select></div>
+        <div class="field"><label>Reported by</label><select class="control" id="fSvcOp"></select></div>
+      </div>
+      <div class="field"><label>Job type</label>
+        <div class="segset" data-seg="svcType">
+          <button class="opt-b on">Service</button><button class="opt-b">Repair</button><button class="opt-b">Breakdown</button><button class="opt-b">Inspection</button>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="field"><label>Hours / Odometer</label><input class="control" type="number" id="fSvcHours" placeholder="e.g. 4210"></div>
+        <div class="field"><label>Priority</label>
+          <div class="segset" data-seg="svcPrio"><button class="opt-b">Low</button><button class="opt-b on">Medium</button><button class="opt-b">Urgent</button></div>
+        </div>
+      </div>
+      <div class="field"><label>Reported fault / work required</label><textarea class="control" id="fSvcFault" placeholder="Describe the fault or requested work&hellip;"></textarea></div>
+      <div class="field"><label>Work carried out <span class="opt">(if completed)</span></label><textarea class="control" id="fSvcWork" placeholder="Detail the work completed&hellip;"></textarea></div>
+      <div class="field"><label>Parts used</label>
+        <div id="fSvcParts"><div class="parts-empty">No parts added yet.</div></div>
+        <button class="addlink" id="fSvcAddPart">%PLUS_S% Add part</button>
+      </div>
+      <div class="frow">
+        <div class="field"><label>Labour hours</label><input class="control" type="number" step="0.5" id="fSvcLabour" placeholder="e.g. 3.5"></div>
+        <div class="field"><label>Mechanic</label><select class="control" id="fSvcMech"></select></div>
+      </div>
+      <div class="field"><label>Status</label>
+        <div class="segset" data-seg="svcStatus"><button class="opt-b on">In Progress</button><button class="opt-b">Awaiting Parts</button><button class="opt-b">Completed</button></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn grey" data-close>Cancel</button><button class="btn red" id="saveSvc">Save Job Card</button></div>
+  </div>
+
+  <!-- Tyre add -->
+  <div class="modal wide" id="mTyre" style="display:none">
+    <div class="modal-head"><h3>New Tyre Job Sheet</h3><button class="x" data-close>&times;</button></div>
+    <div class="modal-body">
+      <div class="frow">
+        <div class="field"><label>Vehicle reg</label><input class="control" id="fTyreReg" placeholder="e.g. 191-SO-4821" style="text-transform:uppercase"></div>
+        <div class="field"><label>Fleet No.</label><select class="control" id="fTyreFleet"></select></div>
+      </div>
+      <div class="frow">
+        <div class="field"><label>Service type</label>
+          <div class="segset" data-seg="tyreType"><button class="opt-b on">New Fit</button><button class="opt-b">Puncture Repair</button><button class="opt-b">Rotation</button><button class="opt-b">Inspection</button></div>
+        </div>
+        <div class="field"><label>Location</label>
+          <div class="segset" data-seg="tyreLoc"><button class="opt-b on">Depot</button><button class="opt-b">Roadside / Site</button></div>
+        </div>
+      </div>
+      <div class="field"><label>Tyre position(s) <span class="opt">tap to select</span></label>
+        <div class="posgrid" id="fTyrePos">
+          <button class="pos">1L</button><button class="pos">1R</button><button class="pos">2L</button><button class="pos">2R</button><button class="pos">3L</button><button class="pos">3R</button>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="field"><label>Brand / pattern</label><select class="control" id="fTyreBrand"></select></div>
+        <div class="field"><label>Tyre size</label><select class="control" id="fTyreSize"></select></div>
+      </div>
+      <div class="frow">
+        <div class="field"><label>Tread remaining <span class="opt">mm</span></label><input class="control" type="number" id="fTyreTread" placeholder="e.g. 8"></div>
+        <div class="field"><label>Pressure <span class="opt">psi</span></label><input class="control" type="number" id="fTyrePress" placeholder="e.g. 120"></div>
+      </div>
+      <div class="frow">
+        <div class="field"><label>Fitter</label><select class="control" id="fTyreFitter"></select></div>
+        <div class="field"><label>Status</label>
+          <div class="segset" data-seg="tyreStatus"><button class="opt-b on">Completed</button><button class="opt-b">Invoiced</button><button class="opt-b">Open</button></div>
+        </div>
+      </div>
+      <div class="field"><label>Notes <span class="opt">optional</span></label><textarea class="control" id="fTyreNotes" placeholder="Valve replaced, casing condition, disposal&hellip;"></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn grey" data-close>Cancel</button><button class="btn red" id="saveTyre">Save Job Sheet</button></div>
+  </div>
+
+  <!-- Detail view -->
+  <div class="modal" id="mView" style="display:none">
+    <div class="modal-head"><h3 id="vTitle">Job Card</h3><button class="x" data-close>&times;</button></div>
+    <div class="modal-body"><div class="detail-grid" id="vBody"></div></div>
+    <div class="modal-foot"><button class="btn grey" data-close>Close</button><button class="btn red" id="vEdit">Edit</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="d"></span><span id="toastMsg"></span></div>
+
+<script>
+const I={
+  DASH:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 12l4-3"/><path d="M12 7v0M7 12h0M17 12h0"/></svg>',
+  USERS:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 5.5a3 3 0 0 1 0 5.6M21 20a6 6 0 0 0-4-5.6"/></svg>',
+  TRUCK:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V6H2v11h2"/><circle cx="6.5" cy="17.5" r="1.7"/><circle cx="16.5" cy="17.5" r="1.7"/><path d="M14 9h4l3 4v4h-2"/></svg>',
+  LOAD:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>',
+  BOX:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M3 11h18M9 7V4h6v3"/></svg>',
+  REPORT:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>',
+  PLANT:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h11v-4H7l-2 4Z"/><path d="M14 14V8h3l3 4v2"/><circle cx="6" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/><path d="M9 14V9"/></svg>',
+  SUN:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>',
+  KEY:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3M17 6l2 2M14 9l2 2"/></svg>',
+  WRENCH:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0 5 5l-9.4 9.4a2.1 2.1 0 0 1-3-3l9.4-9.4a4 4 0 0 0-2-2Z"/></svg>',
+  TYRE:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.4"/><path d="M12 3v3.6M12 17.4V21M3 12h3.6M17.4 12H21M5.6 5.6l2.6 2.6M15.8 15.8l2.6 2.6"/></svg>',
+  CARET:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
+  BURGER:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>',
+  GRID:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+  BELL:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',
+  ARROW:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  PLUS:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  PLUS_S:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  SEARCH:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>',
+  EYE:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
+  PEN:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+  TRASH:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>',
+  CHECK:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+  WRENCH_BIG:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14.7 6.3a4 4 0 0 0 5 5l-9.4 9.4a2.1 2.1 0 0 1-3-3z"/></svg>',
+  USERADD:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="8" r="4"/><path d="M2 20a7 7 0 0 1 14 0z"/><path d="M18 8h4M20 6v4" stroke="currentColor" stroke-width="2"/></svg>',
+  BAG:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 7h12l1 13H5z"/><path d="M9 7a3 3 0 0 1 6 0" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+  CHART:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg>',
+};
+
+const DATA={
+  machines:['EX01 · Cat 320 Excavator','EX04 · Komatsu PC210','DT02 · Volvo A25 Dumper','LL03 · Low Loader Trailer','JCB05 · JCB 3CX','TR07 · Scania R450 Unit','RL09 · Bomag Roller','TH11 · JCB 540-170 Telehandler'],
+  operators:['J. Brennan','P. Gallagher','M. Doherty','S. Feeney','C. Kilfeather','T. Rooney'],
+  mechanics:['Liam Harte','Declan Moran','Kevin Scanlon','Aidan Foley'],
+  fleet:['SO-1 · Scania Tipper','SO-4 · Volvo FH Artic','SO-6 · DAF CF Rigid','SO-9 · Iveco Grab','LL03 · Low Loader'],
+  brands:['Michelin X Multi','Continental HDR2','Bridgestone R-Drive','Goodyear KMAX','Hankook AL10','Part-worn (approved)'],
+  sizes:['315/80 R22.5','385/65 R22.5','295/80 R22.5','13 R22.5','425/65 R22.5','445/45 R19.5'],
+  parts:['Hydraulic hose 1/2"','Oil filter','Fuel filter','Air filter','Alternator belt','Track pad bolt','Coolant 5L','Grease cartridge','Brake pad set','Glow plug'],
+};
+
+let svc=[
+  {ref:'JC-1042',machine:'EX01 · Cat 320 Excavator',type:'Repair',mech:'Liam Harte',prio:'Urgent',status:'In Progress',date:'02 Aug 2026',hours:'4210',op:'J. Brennan',fault:'Hydraulic leak from boom ram, machine losing lift power.',work:'Boom ram seals replaced, hoses inspected.',labour:'3.5',parts:[{p:'Hydraulic hose 1/2"',q:1},{p:'Grease cartridge',q:2}]},
+  {ref:'JC-1041',machine:'DT02 · Volvo A25 Dumper',type:'Service',mech:'Declan Moran',prio:'Low',status:'Completed',date:'31 Jul 2026',hours:'6120',op:'P. Gallagher',fault:'500-hour scheduled service.',work:'Full service: oils, filters, greased, inspected.',labour:'4',parts:[{p:'Oil filter',q:1},{p:'Fuel filter',q:1},{p:'Air filter',q:1}]},
+  {ref:'JC-1039',machine:'JCB05 · JCB 3CX',type:'Breakdown',mech:'Kevin Scanlon',prio:'Medium',status:'Awaiting Parts',date:'29 Jul 2026',hours:'8890',op:'M. Doherty',fault:'Will not start, suspected glow plugs.',work:'Diagnosed faulty glow plugs, on order.',labour:'1.5',parts:[{p:'Glow plug',q:4}]},
+];
+let tyre=[
+  {ref:'TS-0288',reg:'191-SO-4821',type:'New Fit',pos:'2L, 2R',size:'315/80 R22.5',brand:'Michelin X Multi',fitter:'Aidan Foley',status:'Completed',date:'02 Aug 2026',fleet:'SO-4 · Volvo FH Artic',tread:'14',press:'120',notes:'Two new drive tyres fitted, torqued to 600Nm.'},
+  {ref:'TS-0287',reg:'172-SO-1140',type:'Puncture Repair',pos:'3R',size:'385/65 R22.5',brand:'Continental HDR2',fitter:'Liam Harte',status:'Invoiced',date:'01 Aug 2026',fleet:'SO-6 · DAF CF Rigid',tread:'9',press:'115',notes:'Nail in tread, plug + patch repair.'},
+  {ref:'TS-0286',reg:'201-SO-3390',type:'Rotation',pos:'1L, 1R, 3L, 3R',size:'315/80 R22.5',brand:'Goodyear KMAX',fitter:'Aidan Foley',status:'Completed',date:'30 Jul 2026',fleet:'SO-1 · Scania Tipper',tread:'7',press:'118',notes:'Front-to-rear rotation to even wear.'},
+];
+let svcSeq=1043, tyreSeq=289;
+
+/* icon substitution */
+document.body.innerHTML=document.body.innerHTML.replace(/%([A-Z_]+)%/g,(m,k)=>I[k]!==undefined?I[k]:m);
+
+/* fill selects */
+function opt(sel,arr,ph){sel.innerHTML=(ph?`<option value="">${ph}</option>`:'')+arr.map(v=>`<option>${v}</option>`).join('');}
+opt(document.getElementById('fSvcMachine'),DATA.machines,'Select machine');
+opt(document.getElementById('fSvcOp'),DATA.operators,'Operator');
+opt(document.getElementById('fSvcMech'),DATA.mechanics,'Assign');
+opt(document.getElementById('fTyreFleet'),DATA.fleet,'Select');
+opt(document.getElementById('fTyreBrand'),DATA.brands,'Select');
+opt(document.getElementById('fTyreSize'),DATA.sizes,'Select');
+opt(document.getElementById('fTyreFitter'),DATA.mechanics,'Assign');
+
+/* ---- badges ---- */
+function badge(s){
+  const map={'In Progress':'prog','Awaiting Parts':'await','Completed':'done','Invoiced':'inv','Open':'open'};
+  return `<span class="badge ${map[s]||'open'}"><span class="bd"></span>${s}</span>`;
+}
+function prioTag(p){const c={Low:'low',Medium:'med',Urgent:'urg'}[p]||'med';return `<span class="prio ${c}">${p}</span>`;}
+
+/* ---- render tables ---- */
+function renderSvc(){
+  const q=(document.getElementById('svcSearch').value||'').toLowerCase();
+  const f=document.getElementById('svcFilter').value;
+  const rows=svc.filter(j=>(!f||j.status===f)&&(j.ref+j.machine+j.mech).toLowerCase().includes(q));
+  document.getElementById('svcBody').innerHTML=rows.map((j,i)=>`
+    <tr>
+      <td class="mono">${j.ref}</td>
+      <td class="prim">${j.machine}</td>
+      <td>${j.type}</td>
+      <td>${j.mech}</td>
+      <td>${prioTag(j.prio)}</td>
+      <td>${badge(j.status)}</td>
+      <td class="muted">${j.date}</td>
+      <td><div class="rowacts"><button class="iconbtn v" data-vsvc="${svc.indexOf(j)}" title="View">${I.EYE}</button><button class="iconbtn e" data-estub title="Edit">${I.PEN}</button></div></td>
+    </tr>`).join('') || `<tr><td colspan="8" class="muted" style="text-align:center;padding:26px">No job cards match your search.</td></tr>`;
+  document.getElementById('svcCountLbl').textContent=`Showing ${rows.length} of ${svc.length} job cards`;
+}
+function renderTyre(){
+  const q=(document.getElementById('tyreSearch').value||'').toLowerCase();
+  const f=document.getElementById('tyreFilter').value;
+  const rows=tyre.filter(j=>(!f||j.type===f)&&(j.ref+j.reg+j.fitter).toLowerCase().includes(q));
+  document.getElementById('tyreBody').innerHTML=rows.map(j=>`
+    <tr>
+      <td class="mono">${j.ref}</td>
+      <td class="prim">${j.reg}</td>
+      <td>${j.type}</td>
+      <td class="muted">${j.pos}</td>
+      <td>${j.size}</td>
+      <td>${j.fitter}</td>
+      <td>${badge(j.status)}</td>
+      <td class="muted">${j.date}</td>
+      <td><div class="rowacts"><button class="iconbtn v" data-vtyre="${tyre.indexOf(j)}" title="View">${I.EYE}</button><button class="iconbtn e" data-estub title="Edit">${I.PEN}</button></div></td>
+    </tr>`).join('') || `<tr><td colspan="9" class="muted" style="text-align:center;padding:26px">No job sheets match your search.</td></tr>`;
+  document.getElementById('tyreCountLbl').textContent=`Showing ${rows.length} of ${tyre.length} job sheets`;
+}
+renderSvc(); renderTyre();
+
+/* ---- routing ---- */
+const titles={dashboard:['Dashboard','Dashboard v1'],service:['Machine Service Log','Service Log'],tyre:['Tyre Fitter Sheets','Tyre Sheets']};
+function show(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.dataset.view===view));
+  document.querySelectorAll('#snav a').forEach(a=>a.classList.toggle('active',a.dataset.view===view));
+  const t=titles[view]||['',''];
+  document.getElementById('pageTitle').textContent=t[0];
+  document.getElementById('crumbNow').textContent=t[1];
+  window.scrollTo(0,0);
+  if(window.matchMedia('(max-width:860px)').matches) document.body.classList.remove('snav-open');
+}
+document.addEventListener('click',e=>{
+  const v=e.target.closest('[data-view]');
+  const stub=e.target.closest('[data-stub]');
+  const estub=e.target.closest('[data-estub]');
+  if(v){show(v.dataset.view); return;}
+  if(estub){toast('Edit — demo is read-only for existing records'); return;}
+  if(stub){toast(stub.dataset.stub+' — existing module'); return;}
+});
+
+/* burger */
+document.getElementById('burger').addEventListener('click',()=>{
+  if(window.matchMedia('(max-width:860px)').matches) document.body.classList.toggle('snav-open');
+  else document.body.classList.toggle('collapsed');
+});
+document.getElementById('backdrop').addEventListener('click',()=>document.body.classList.remove('snav-open'));
+
+/* search / filter */
+['svcSearch','svcFilter'].forEach(id=>document.getElementById(id).addEventListener('input',renderSvc));
+['tyreSearch','tyreFilter'].forEach(id=>document.getElementById(id).addEventListener('input',renderTyre));
+
+/* ---- segmented selectors ---- */
+document.querySelectorAll('[data-seg]').forEach(set=>{
+  set.addEventListener('click',e=>{const b=e.target.closest('.opt-b');if(!b)return;set.querySelectorAll('.opt-b').forEach(x=>x.classList.remove('on'));b.classList.add('on');});
+});
+function segVal(name){const s=document.querySelector(`[data-seg="${name}"] .opt-b.on`);return s?s.textContent.trim():'';}
+
+/* tyre position toggles */
+document.getElementById('fTyrePos').addEventListener('click',e=>{const b=e.target.closest('.pos');if(b)b.classList.toggle('on');});
+
+/* ---- parts rows ---- */
+function partsEmpty(){document.getElementById('fSvcParts').innerHTML='<div class="parts-empty">No parts added yet.</div>';}
+document.getElementById('fSvcAddPart').addEventListener('click',()=>{
+  const host=document.getElementById('fSvcParts');const e=host.querySelector('.parts-empty');if(e)e.remove();
+  const row=document.createElement('div');row.className='partrow';
+  row.innerHTML=`<select class="control"><option value="">Part</option>${DATA.parts.map(p=>`<option>${p}</option>`).join('')}</select>`+
+    `<input class="control" type="number" value="1" min="1" style="text-align:center">`+
+    `<button class="del" title="Remove">${I.TRASH}</button>`;
+  row.querySelector('.del').addEventListener('click',()=>{row.remove();if(!host.querySelector('.partrow'))partsEmpty();});
+  host.appendChild(row);
+});
+
+/* ---- modals ---- */
+const overlay=document.getElementById('overlay');
+function openModal(id){document.querySelectorAll('.modal').forEach(m=>m.style.display='none');document.getElementById(id).style.display='block';overlay.classList.add('open');}
+function closeModal(){overlay.classList.remove('open');}
+document.addEventListener('click',e=>{if(e.target.closest('[data-close]')||e.target===overlay)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+document.getElementById('addSvc').addEventListener('click',()=>{
+  document.getElementById('fSvcMachine').selectedIndex=0;document.getElementById('fSvcOp').selectedIndex=0;
+  document.getElementById('fSvcMech').selectedIndex=0;document.getElementById('fSvcHours').value='';
+  document.getElementById('fSvcFault').value='';document.getElementById('fSvcWork').value='';document.getElementById('fSvcLabour').value='';
+  partsEmpty();
+  document.querySelectorAll('[data-seg="svcType"] .opt-b,[data-seg="svcStatus"] .opt-b').forEach((b,i)=>b.classList.toggle('on',i===0));
+  document.querySelectorAll('[data-seg="svcPrio"] .opt-b').forEach((b,i)=>b.classList.toggle('on',i===1));
+  openModal('mSvc');
+});
+document.getElementById('addTyre').addEventListener('click',()=>{
+  document.getElementById('fTyreReg').value='';document.getElementById('fTyreFleet').selectedIndex=0;
+  document.getElementById('fTyreBrand').selectedIndex=0;document.getElementById('fTyreSize').selectedIndex=0;
+  document.getElementById('fTyreTread').value='';document.getElementById('fTyrePress').value='';document.getElementById('fTyreNotes').value='';
+  document.getElementById('fTyreFitter').selectedIndex=0;
+  document.querySelectorAll('#fTyrePos .pos').forEach(p=>p.classList.remove('on'));
+  ['tyreType','tyreLoc','tyreStatus'].forEach(n=>document.querySelectorAll(`[data-seg="${n}"] .opt-b`).forEach((b,i)=>b.classList.toggle('on',i===0)));
+  openModal('mTyre');
+});
+
+/* ---- save ---- */
+document.getElementById('saveSvc').addEventListener('click',()=>{
+  const ref='JC-'+(svcSeq++);
+  const parts=[...document.querySelectorAll('#fSvcParts .partrow')].map(r=>({p:r.querySelector('select').value||'Part',q:+r.querySelector('input').value||1})).filter(x=>x.p!=='Part');
+  svc.unshift({ref,machine:document.getElementById('fSvcMachine').value||'Unassigned machine',type:segVal('svcType'),
+    mech:document.getElementById('fSvcMech').value||'Unassigned',prio:segVal('svcPrio'),status:segVal('svcStatus'),
+    date:'02 Aug 2026',hours:document.getElementById('fSvcHours').value||'—',op:document.getElementById('fSvcOp').value||'—',
+    fault:document.getElementById('fSvcFault').value||'—',work:document.getElementById('fSvcWork').value||'—',
+    labour:document.getElementById('fSvcLabour').value||'—',parts});
+  renderSvc();closeModal();toast('Job card '+ref+' saved');show('service');
+});
+document.getElementById('saveTyre').addEventListener('click',()=>{
+  const ref='TS-'+String(tyreSeq++).padStart(4,'0');
+  const pos=[...document.querySelectorAll('#fTyrePos .pos.on')].map(p=>p.textContent).join(', ')||'—';
+  tyre.unshift({ref,reg:(document.getElementById('fTyreReg').value||'—').toUpperCase(),type:segVal('tyreType'),pos,
+    size:document.getElementById('fTyreSize').value||'—',brand:document.getElementById('fTyreBrand').value||'—',
+    fitter:document.getElementById('fTyreFitter').value||'Unassigned',status:segVal('tyreStatus'),date:'02 Aug 2026',
+    fleet:document.getElementById('fTyreFleet').value||'—',tread:document.getElementById('fTyreTread').value||'—',
+    press:document.getElementById('fTyrePress').value||'—',notes:document.getElementById('fTyreNotes').value||'—'});
+  renderTyre();closeModal();toast('Job sheet '+ref+' saved');show('tyre');
+});
+
+/* ---- detail view ---- */
+function dRow(k,v,span){return `<div${span?' class="span2"':''}><div class="d-k">${k}</div><div class="d-v">${v}</div></div>`;}
+document.addEventListener('click',e=>{
+  const s=e.target.closest('[data-vsvc]'), t=e.target.closest('[data-vtyre]');
+  if(s){const j=svc[+s.dataset.vsvc];document.getElementById('vTitle').textContent='Job Card '+j.ref;
+    document.getElementById('vBody').innerHTML=dRow('Machine',j.machine)+dRow('Status',badge(j.status))+dRow('Job type',j.type)+dRow('Priority',prioTag(j.prio))+dRow('Mechanic',j.mech)+dRow('Reported by',j.op)+dRow('Hours / Odometer',j.hours)+dRow('Labour hours',j.labour)+dRow('Reported fault',j.fault,true)+dRow('Work carried out',j.work,true)+dRow('Parts used',j.parts.length?j.parts.map(p=>`${p.q}× ${p.p}`).join(', '):'None',true);
+    openModal('mView');}
+  if(t){const j=tyre[+t.dataset.vtyre];document.getElementById('vTitle').textContent='Job Sheet '+j.ref;
+    document.getElementById('vBody').innerHTML=dRow('Vehicle reg',j.reg)+dRow('Status',badge(j.status))+dRow('Fleet',j.fleet)+dRow('Service type',j.type)+dRow('Positions',j.pos)+dRow('Tyre size',j.size)+dRow('Brand / pattern',j.brand)+dRow('Fitter',j.fitter)+dRow('Tread (mm)',j.tread)+dRow('Pressure (psi)',j.press)+dRow('Notes',j.notes,true);
+    openModal('mView');}
+});
+document.getElementById('vEdit').addEventListener('click',()=>{closeModal();toast('Edit — demo is read-only for existing records');});
+
+/* toast */
+let tt;const toastEl=document.getElementById('toast'),toastMsg=document.getElementById('toastMsg');
+function toast(m){toastMsg.textContent=m;toastEl.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>toastEl.classList.remove('show'),2100);}
+</script>
+</body>
+</html>
