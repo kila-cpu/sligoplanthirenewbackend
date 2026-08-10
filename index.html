@@ -39,19 +39,40 @@
   }
   button{font-family:inherit}
 
-  /* ---------- top nav ---------- */
-  .topnav{background:#fff;border-bottom:1px solid var(--line-2);position:sticky;top:0;z-index:30}
-  .topnav .inner{max-width:1680px;margin:0 auto;display:flex;align-items:center;gap:6px;padding:0 26px;height:66px}
-  .topnav a.navlink{color:var(--ink);font-size:19px;font-weight:500;padding:10px 18px;border-radius:8px;cursor:pointer;white-space:nowrap;letter-spacing:-.01em}
-  .topnav a.navlink:hover{background:#f2f3f5}
-  .topnav a.navlink.active{color:#000;font-weight:700}
-  .topnav .spacer{flex:1}
-  .topnav .logo{width:40px;height:40px;border-radius:50%;background:#fff;border:2px solid #e6e8eb;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
-  .topnav .logo svg{width:28px;height:28px}
-  .topnav .chat{width:42px;height:42px;border-radius:50%;background:#fff;border:1px solid #e6e8eb;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#5a6169;margin-left:10px}
-  .topnav .chat:hover{background:#f2f3f5}
-  .topnav .chat svg{width:20px;height:20px}
-  @media (max-width:1100px){.topnav a.navlink{font-size:16px;padding:8px 12px}}
+  /* ---------- layout + sidebar ---------- */
+  .layout{display:flex;min-height:100vh}
+  .sidebar{width:252px;flex:0 0 252px;background:var(--red);color:#fff;position:fixed;inset:0 auto 0 0;z-index:45;display:flex;flex-direction:column;transition:transform .2s ease}
+  .sidebar .brand{background:#fff;padding:16px 10px 13px;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .sidebar .brand svg{width:122px;height:auto;display:block}
+  .sidebar .brand .bsub{font-size:11px;color:#2f3a45;font-weight:600}
+  .snav{list-style:none;margin:0;padding:10px 8px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;flex:1}
+  .snav::-webkit-scrollbar{width:6px}.snav::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18);border-radius:4px}
+  .snav a{display:flex;align-items:center;gap:13px;padding:12px 13px;border-radius:8px;color:#fff;font-size:15px;font-weight:500;cursor:pointer;transition:background .12s;letter-spacing:-.01em}
+  .snav a:hover{background:rgba(0,0,0,.13)}
+  .snav a.active{background:#1c1c1c;font-weight:700}
+  .snav a .ic{width:20px;display:flex;justify-content:center;flex:0 0 auto}
+  .snav a .ic svg{width:18px;height:18px}
+  .snav .divider{height:1px;background:rgba(255,255,255,.2);margin:8px 12px}
+
+  .main{flex:1;margin-left:252px;min-width:0;display:flex;flex-direction:column}
+  .topbar{height:64px;background:#fff;border-bottom:1px solid var(--line-2);display:flex;align-items:center;gap:12px;padding:0 22px;position:sticky;top:0;z-index:30}
+  .topbar .burger{background:none;border:0;cursor:pointer;color:#4a4a4a;padding:8px;border-radius:8px;display:none}
+  .topbar .burger:hover{background:#f2f3f5}
+  .topbar .burger svg{width:22px;height:22px}
+  .topbar .spacer{flex:1}
+  .topbar .logo{width:40px;height:40px;border-radius:50%;background:#fff;border:2px solid #e6e8eb;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .topbar .logo svg{width:28px;height:28px}
+  .topbar .chat{width:42px;height:42px;border-radius:50%;background:#fff;border:1px solid #e6e8eb;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#5a6169}
+  .topbar .chat:hover{background:#f2f3f5}
+  .topbar .chat svg{width:20px;height:20px}
+  .backdrop{display:none}
+  @media (max-width:900px){
+    .sidebar{transform:translateX(-100%)}
+    body.snav-open .sidebar{transform:none}
+    .main{margin-left:0}
+    .topbar .burger{display:flex}
+    body.snav-open .backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:40}
+  }
 
   /* ---------- page ---------- */
   .wrap{max-width:1680px;margin:0 auto;padding:26px 26px 60px}
@@ -177,25 +198,43 @@
 </style>
 </head>
 <body>
-  <!-- ===================== TOP NAV ===================== -->
-  <nav class="topnav">
-    <div class="inner">
-      <a class="navlink" data-stub="Dashboard">Dashboard</a>
-      <a class="navlink" data-stub="Timesheets">Timesheets</a>
-      <a class="navlink" data-stub="Vehicles Checks">Vehicles Checks</a>
-      <a class="navlink" data-stub="Agg Loads">Agg Loads</a>
-      <a class="navlink" data-stub="Defects">Defects</a>
-      <a class="navlink" data-stub="Tracker">Tracker</a>
-      <span class="spacer"></span>
-      <span class="logo" title="McMunn Sligo Plant Hire">
-        <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#e8342c" stroke-width="2.4"/><path d="M13 25c3-1 5-3 6-6M27 15c-3 1-5 3-6 6" stroke="#e8342c" stroke-width="3" stroke-linecap="round"/><circle cx="14" cy="15" r="2" fill="#e8342c"/><circle cx="26" cy="25" r="2" fill="#e8342c"/></svg>
-      </span>
-      <button class="chat" data-stub="Messages" title="Messages">%CHATIC%</button>
-    </div>
-  </nav>
+  <!-- ===================== LAYOUT ===================== -->
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <svg viewBox="0 0 300 150" role="img" aria-label="McMunn">
+          <polygon points="14,140 54,140 104,20 64,20" fill="#2B2B2B"/>
+          <polygon points="70,140 108,140 130,66 150,110 170,66 192,140 230,140 196,20 168,20 150,64 132,20 104,20" fill="#e8342c"/>
+          <polygon points="246,140 286,140 236,20 196,20" fill="#2B2B2B"/>
+          <g transform="rotate(-71 92 78)"><rect x="34" y="70" width="118" height="17" rx="2" fill="#3a3a3a"/><text x="93" y="83" font-family="Georgia,serif" font-style="italic" font-size="15" fill="#fff" text-anchor="middle" font-weight="700">McMunn</text></g>
+        </svg>
+        <div class="bsub">Sligo Plant Hire &amp; Haulage Ltd.</div>
+      </div>
+      <nav class="snav">
+        <a data-stub="Dashboard"><span class="ic">%DASH%</span>Dashboard</a>
+        <a data-stub="Timesheets"><span class="ic">%CLOCK%</span>Timesheets</a>
+        <a data-stub="Vehicles Checks"><span class="ic">%CLIP%</span>Vehicles Checks</a>
+        <a data-stub="Agg Loads"><span class="ic">%LOAD%</span>Agg Loads</a>
+        <a data-stub="Defects"><span class="ic">%ALERT%</span>Defects</a>
+        <a data-stub="Tracker"><span class="ic">%PIN%</span>Tracker</a>
+        <span class="divider"></span>
+        <a class="active"><span class="ic">%WRENCH%</span>Workshop Job Cards</a>
+      </nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
 
-  <!-- ===================== PAGE ===================== -->
-  <div class="wrap">
+    <div class="main">
+      <header class="topbar">
+        <button class="burger" id="burger" title="Menu">%BURGER%</button>
+        <span class="spacer"></span>
+        <span class="logo" title="McMunn Sligo Plant Hire">
+          <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#e8342c" stroke-width="2.4"/><path d="M13 25c3-1 5-3 6-6M27 15c-3 1-5 3-6 6" stroke="#e8342c" stroke-width="3" stroke-linecap="round"/><circle cx="14" cy="15" r="2" fill="#e8342c"/><circle cx="26" cy="25" r="2" fill="#e8342c"/></svg>
+        </span>
+        <button class="chat" data-stub="Messages" title="Messages">%CHATIC%</button>
+      </header>
+
+      <!-- ===================== PAGE ===================== -->
+      <div class="wrap">
     <div class="pagehead">
       <div class="title">
         <span class="wr">%WRENCH%</span>
@@ -218,6 +257,8 @@
           <tbody id="rows"></tbody>
         </table>
       </div>
+    </div>
+  </div>
     </div>
   </div>
 
@@ -304,6 +345,13 @@
 <script>
 const I={
   WRENCH:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0 5 5l-9.4 9.4a2.1 2.1 0 0 1-3-3l9.4-9.4a4 4 0 0 0-2-2Z"/></svg>',
+  DASH:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>',
+  CLOCK:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  CLIP:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h2"/><path d="M9 14l2 2 4-4"/></svg>',
+  LOAD:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V6H2v11h2"/><circle cx="6.5" cy="17.5" r="1.7"/><circle cx="16.5" cy="17.5" r="1.7"/><path d="M14 9h4l3 4v4h-2"/></svg>',
+  ALERT:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>',
+  PIN:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+  BURGER:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>',
   CHATIC:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.9 7.6L3 21l1.9-6A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg>',
   PLUS_S:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
   TRASH:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>',
@@ -373,6 +421,12 @@ function render(){
 }
 render();
 document.getElementById('search').addEventListener('input',render);
+
+/* sidebar (mobile toggle) */
+const burger=document.getElementById('burger');
+if(burger) burger.addEventListener('click',()=>document.body.classList.toggle('snav-open'));
+const backdrop=document.getElementById('backdrop');
+if(backdrop) backdrop.addEventListener('click',()=>document.body.classList.remove('snav-open'));
 
 /* ---------- modal plumbing ---------- */
 const overlay=document.getElementById('overlay');
