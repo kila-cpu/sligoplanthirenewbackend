@@ -2,7 +2,7 @@
   "name": "sligoplanthirenewbackend",
   "version": "1.0.0",
   "private": true,
-  "description": "McMunn Sligo Plant Hire admin — Machine Service Log & Tyre Fitter Job Sheet modules (interactive demo)",
+  "description": "McMunn Sligo Plant Hire \u2014 combined Workshop Job Cards backend (Plant, Vehicle & Tyre job sheets)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
