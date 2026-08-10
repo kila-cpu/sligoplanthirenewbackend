@@ -9,6 +9,8 @@
   :root{
     --red:#e8342c;
     --red-dark:#cf261f;
+    --side:#c0392b;
+    --side-head:rgba(255,255,255,.06);
     --ink:#2b2f36;
     --ink-soft:#3c424b;
     --sub:#8a929c;
@@ -41,18 +43,30 @@
 
   /* ---------- layout + sidebar ---------- */
   .layout{display:flex;min-height:100vh}
-  .sidebar{width:252px;flex:0 0 252px;background:var(--red);color:#fff;position:fixed;inset:0 auto 0 0;z-index:45;display:flex;flex-direction:column;transition:transform .2s ease}
+  .sidebar{width:252px;flex:0 0 252px;background:var(--side);color:#fff;position:fixed;inset:0 auto 0 0;z-index:45;display:flex;flex-direction:column;transition:transform .2s ease}
   .sidebar .brand{background:#fff;padding:16px 10px 13px;display:flex;flex-direction:column;align-items:center;gap:4px}
   .sidebar .brand svg{width:122px;height:auto;display:block}
   .sidebar .brand .bsub{font-size:11px;color:#2f3a45;font-weight:600}
-  .snav{list-style:none;margin:0;padding:10px 8px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;flex:1}
-  .snav::-webkit-scrollbar{width:6px}.snav::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18);border-radius:4px}
-  .snav a{display:flex;align-items:center;gap:13px;padding:12px 13px;border-radius:8px;color:#fff;font-size:15px;font-weight:500;cursor:pointer;transition:background .12s;letter-spacing:-.01em}
-  .snav a:hover{background:rgba(0,0,0,.13)}
-  .snav a.active{background:#1c1c1c;font-weight:700}
-  .snav a .ic{width:20px;display:flex;justify-content:center;flex:0 0 auto}
-  .snav a .ic svg{width:18px;height:18px}
-  .snav .divider{height:1px;background:rgba(255,255,255,.2);margin:8px 12px}
+  .snav{margin:0;padding:0 0 24px;display:flex;flex-direction:column;overflow-y:auto;flex:1}
+  .snav::-webkit-scrollbar{width:6px}.snav::-webkit-scrollbar-thumb{background:rgba(0,0,0,.2);border-radius:4px}
+  .snav .ic{width:22px;display:flex;justify-content:center;flex:0 0 auto}
+  .snav .ic svg{width:18px;height:18px}
+  .item{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;border:0;background:none;text-align:left;font-family:inherit;letter-spacing:-.01em}
+  .item:hover{background:rgba(0,0,0,.12)}
+  .item.active{background:#141414}
+  .group{border-top:1px solid rgba(255,255,255,.12)}
+  .ghead{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;background:var(--side-head);color:#fff;font-size:15px;font-weight:600;border:0;cursor:pointer;font-family:inherit;letter-spacing:-.01em}
+  .ghead:hover{background:rgba(255,255,255,.11)}
+  .ghead .gt{flex:1;text-align:left}
+  .ghead .car{opacity:.85;transition:transform .2s;display:flex}
+  .ghead .car svg{width:13px;height:13px}
+  .group.open .ghead .car{transform:rotate(180deg)}
+  .gbody{display:none;flex-direction:column;padding:4px 0 8px}
+  .group.open .gbody{display:flex}
+  .sub{display:flex;align-items:center;gap:9px;padding:10px 16px 10px 24px;color:#fff;font-size:14px;font-weight:500;cursor:pointer;opacity:.97}
+  .sub:hover{background:rgba(0,0,0,.15)}
+  .sub .cr{display:flex;opacity:.75;flex:0 0 auto}
+  .sub .cr svg{width:12px;height:12px}
 
   .main{flex:1;margin-left:252px;min-width:0;display:flex;flex-direction:column}
   .topbar{height:64px;background:#fff;border-bottom:1px solid var(--line-2);display:flex;align-items:center;gap:12px;padding:0 22px;position:sticky;top:0;z-index:30}
@@ -211,14 +225,71 @@
         <div class="bsub">Sligo Plant Hire &amp; Haulage Ltd.</div>
       </div>
       <nav class="snav">
-        <a data-stub="Dashboard"><span class="ic">%DASH%</span>Dashboard</a>
-        <a data-stub="Timesheets"><span class="ic">%CLOCK%</span>Timesheets</a>
-        <a data-stub="Vehicles Checks"><span class="ic">%CLIP%</span>Vehicles Checks</a>
-        <a data-stub="Agg Loads"><span class="ic">%LOAD%</span>Agg Loads</a>
-        <a data-stub="Defects"><span class="ic">%ALERT%</span>Defects</a>
-        <a data-stub="Tracker"><span class="ic">%PIN%</span>Tracker</a>
-        <span class="divider"></span>
-        <a class="active"><span class="ic">%WRENCH%</span>Workshop Job Cards</a>
+        <a class="item active" data-stub="Dashboard"><span class="ic">%TACHO%</span>Dashboard</a>
+
+        <div class="group open">
+          <button class="ghead"><span class="ic">%MENU%</span><span class="gt">User Management</span><span class="car">%CARET%</span></button>
+          <div class="gbody">
+            <a class="sub" data-stub="Admin"><span class="cr">%CHEVR%</span>Admin</a>
+            <a class="sub" data-stub="Drivers"><span class="cr">%CHEVR%</span>Drivers</a>
+            <a class="sub" data-stub="App Password"><span class="cr">%CHEVR%</span>App Password</a>
+          </div>
+        </div>
+
+        <div class="group open">
+          <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Truck Management</span><span class="car">%CARET%</span></button>
+          <div class="gbody">
+            <a class="sub" data-stub="Registrations"><span class="cr">%CHEVR%</span>Registrations</a>
+            <a class="sub" data-stub="Morning Checklist"><span class="cr">%CHEVR%</span>Morning Checklist</a>
+            <a class="sub" data-stub="Vehicle Checks"><span class="cr">%CHEVR%</span>Vehicle Checks</a>
+            <a class="sub" data-stub="Summary"><span class="cr">%CHEVR%</span>Summary</a>
+            <a class="sub" data-stub="Category Types"><span class="cr">%CHEVR%</span>Category Types</a>
+          </div>
+        </div>
+
+        <div class="group open">
+          <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Load Management</span><span class="car">%CARET%</span></button>
+          <div class="gbody">
+            <a class="sub" data-stub="Customers"><span class="cr">%CHEVR%</span>Customers</a>
+            <a class="sub" data-stub="Loads"><span class="cr">%CHEVR%</span>Loads</a>
+          </div>
+        </div>
+
+        <div class="group open">
+          <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Parts</span><span class="car">%CARET%</span></button>
+          <div class="gbody">
+            <a class="sub" data-stub="Parts"><span class="cr">%CHEVR%</span>Parts</a>
+          </div>
+        </div>
+
+        <div class="group open">
+          <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Reports</span><span class="car">%CARET%</span></button>
+          <div class="gbody">
+            <a class="sub" data-stub="Invoicing"><span class="cr">%CHEVR%</span>Invoicing</a>
+            <a class="sub" data-stub="Timesheets"><span class="cr">%CHEVR%</span>Timesheets</a>
+            <a class="sub" data-stub="Summary Report"><span class="cr">%CHEVR%</span>Summary Report</a>
+            <a class="sub" data-stub="Defects"><span class="cr">%CHEVR%</span>Defects</a>
+          </div>
+        </div>
+
+        <div class="group open">
+          <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Plant Machinery</span><span class="car">%CARET%</span></button>
+          <div class="gbody">
+            <a class="sub" data-stub="Machines"><span class="cr">%CHEVR%</span>Machines</a>
+            <a class="sub" data-stub="Machines Category"><span class="cr">%CHEVR%</span>Machines Category</a>
+            <a class="sub" data-stub="GA2 Checklist"><span class="cr">%CHEVR%</span>GA2 Checklist</a>
+            <a class="sub" data-stub="GA2 Summary"><span class="cr">%CHEVR%</span>GA2 Summary</a>
+          </div>
+        </div>
+
+        <div class="group open">
+          <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Holidays</span><span class="car">%CARET%</span></button>
+          <div class="gbody">
+            <a class="sub" data-stub="Holidays"><span class="cr">%CHEVR%</span>Holidays</a>
+          </div>
+        </div>
+
+        <a class="item" data-stub="Reset Password"><span class="ic">%KEY%</span>Reset Password</a>
       </nav>
     </aside>
     <div class="backdrop" id="backdrop"></div>
@@ -352,6 +423,11 @@ const I={
   ALERT:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>',
   PIN:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>',
   BURGER:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>',
+  TACHO:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18a9 9 0 1 1 16 0"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M13.4 12.6 17 9"/></svg>',
+  MENU:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+  CARET:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
+  CHEVR:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+  KEY:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 20 3M17 6l2 2M14 9l2 2"/></svg>',
   CHATIC:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.9 7.6L3 21l1.9-6A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg>',
   PLUS_S:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
   TRASH:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>',
@@ -427,6 +503,9 @@ const burger=document.getElementById('burger');
 if(burger) burger.addEventListener('click',()=>document.body.classList.toggle('snav-open'));
 const backdrop=document.getElementById('backdrop');
 if(backdrop) backdrop.addEventListener('click',()=>document.body.classList.remove('snav-open'));
+
+/* sidebar accordion */
+document.querySelectorAll('.ghead').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
 
 /* ---------- modal plumbing ---------- */
 const overlay=document.getElementById('overlay');
@@ -533,7 +612,7 @@ document.addEventListener('click',e=>{
   if(ed){toast('Edit — demo is read-only for existing records');return;}
   if(pd){const j=jobs[+pd.dataset.pdf];toast('Generating PDF for #'+j.no+'…');return;}
   if(dl){delIdx=+dl.dataset.del;document.getElementById('delTitle').textContent='Delete job sheet #'+jobs[delIdx].no+'?';openModal('mDel');return;}
-  if(stub){toast(stub.dataset.stub+' — existing page');return;}
+  if(stub){toast(stub.dataset.stub+' — coming soon');return;}
 });
 document.getElementById('vEdit').addEventListener('click',()=>{closeModal();toast('Edit — demo is read-only for existing records');});
 document.getElementById('vPdf').addEventListener('click',()=>toast('Generating PDF…'));
