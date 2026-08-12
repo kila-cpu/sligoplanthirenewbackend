@@ -197,6 +197,75 @@
   .detail-grid .d-v{font-size:15px;font-weight:600;margin-top:2px;color:var(--ink)}
   .detail-grid .span2{grid-column:1/-1}
 
+  /* ---------- pages / parts ---------- */
+  .page{display:none}
+  .page.active{display:block}
+  .sub.active{background:rgba(0,0,0,.22);font-weight:700}
+  .pagehead .title .subttl{font-size:13px;color:var(--sub);font-weight:600;margin-top:1px}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
+  @media (max-width:1000px){.stats{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.stats{grid-template-columns:1fr}}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+  .stat .si{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .stat .si svg{width:22px;height:22px}
+  .stat .sv{font-size:23px;font-weight:800;line-height:1;color:#20242a}
+  .stat .sl{font-size:13px;color:var(--sub);font-weight:600;margin-top:4px}
+  .si.blue{background:#e7f0fe;color:#1683de}
+  .si.green{background:var(--green-bg);color:var(--green)}
+  .si.amber{background:#fbeecb;color:#b7791f}
+  .si.red{background:#fdeae9;color:var(--red)}
+
+  .callout{display:flex;gap:12px;align-items:center;background:#eef4fe;border:1px solid #d5e6fb;color:#2b4a6b;border-radius:10px;padding:13px 16px;margin-bottom:22px;font-size:14px;line-height:1.45}
+  .callout .co-ic{width:34px;height:34px;border-radius:8px;background:#dbe9fc;color:#1c6fd0;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .callout .co-ic svg{width:18px;height:18px}
+  .callout b{color:#1b3a59}
+
+  .psec{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);margin:8px 2px 12px;display:flex;align-items:center;gap:8px}
+
+  .catgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+  .catcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.12s;text-align:left;font-family:inherit;width:100%}
+  .catcard:hover{border-color:var(--red);box-shadow:0 8px 22px -14px rgba(0,0,0,.4)}
+  .catcard .ci{width:46px;height:46px;border-radius:12px;background:#fdeae9;color:var(--red);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .catcard .ci svg{width:22px;height:22px}
+  .catcard .cmid{flex:1;min-width:0}
+  .catcard .cname{display:block;font-weight:800;font-size:16px;color:#20242a}
+  .catcard .cmeta{display:block;font-size:13px;color:var(--sub);margin-top:2px}
+  .catcard .lowtag{color:#b7791f;font-weight:700}
+  .catcard .cbadge{background:#fdeae9;color:var(--red-dark);font-weight:800;font-size:13px;min-width:26px;height:26px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 8px;flex:0 0 auto}
+  .catcard .cchev{color:#c2c8cf;flex:0 0 auto;display:flex}
+  .catcard .cchev svg{width:16px;height:16px}
+
+  .ptbl{width:100%;border-collapse:collapse;font-size:14.5px}
+  .ptbl th{text-align:left;font-weight:800;color:#3a4048;background:#f8f9fa;padding:12px 14px;border-bottom:2px solid var(--line);font-size:12.5px;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap}
+  .ptbl td{padding:13px 14px;border-top:1px solid var(--line);vertical-align:middle}
+  .ptbl tbody tr:hover{background:#fafbfc}
+  .ptbl .pn{font-variant-numeric:tabular-nums;color:#5a6169}
+  .pstock{font-weight:800;font-variant-numeric:tabular-nums;color:#20242a}
+  .usedchip{display:inline-flex;align-items:center;gap:6px;background:#eef4fe;color:#1c6fd0;font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .usedchip.none{background:#f1f3f5;color:#9aa0a8}
+
+  .stk{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap}
+  .stk .bd{width:7px;height:7px;border-radius:50%;background:currentColor}
+  .stk.in{background:var(--green-bg);color:var(--green)}
+  .stk.low{background:#fbeecb;color:#b7791f}
+  .stk.out{background:#fdeae9;color:var(--red)}
+
+  .backbtn{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line-2);color:#41474d;border-radius:9px;padding:9px 14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+  .backbtn:hover{background:#f5f6f7}
+  .backbtn svg{width:16px;height:16px}
+
+  .usebox{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  .usebox .ub-h{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--sub);margin:0 0 6px}
+  .usebox .ub-h span{color:#1c6fd0;text-transform:none;letter-spacing:0;font-weight:700}
+  .urow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid var(--line)}
+  .urow:first-of-type{border-top:0}
+  .urow .u-job{font-weight:800;color:var(--blue);cursor:pointer}
+  .urow .u-sub{font-size:13px;color:var(--sub);margin-top:2px}
+  .urow .u-r{text-align:right;font-size:13px;color:var(--sub)}
+  .urow .u-r b{color:#20242a;font-size:14px;display:block}
+  .usenone{color:var(--sub);font-size:13.5px;font-style:italic;padding:8px 0}
+
   /* toast */
   .toast{position:fixed;right:26px;bottom:26px;background:#20242a;color:#fff;padding:14px 20px;border-radius:10px;font-size:14.5px;font-weight:600;z-index:80;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px);transition:.28s;box-shadow:0 14px 34px -10px rgba(0,0,0,.5)}
   .toast .d{width:9px;height:9px;border-radius:50%;background:#4ade80}
@@ -226,7 +295,7 @@
       </div>
       <nav class="snav">
         <a class="item" data-stub="Dashboard"><span class="ic">%TACHO%</span>Dashboard</a>
-        <a class="item active"><span class="ic">%WRENCH%</span>Workshop Job Cards</a>
+        <a class="item active" data-nav="jobcards"><span class="ic">%WRENCH%</span>Workshop Job Cards</a>
 
         <div class="group open">
           <button class="ghead"><span class="ic">%MENU%</span><span class="gt">User Management</span><span class="car">%CARET%</span></button>
@@ -259,7 +328,7 @@
         <div class="group open">
           <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Parts</span><span class="car">%CARET%</span></button>
           <div class="gbody">
-            <a class="sub" data-stub="Parts"><span class="cr">%CHEVR%</span>Parts</a>
+            <a class="sub" data-nav="parts"><span class="cr">%CHEVR%</span>Parts</a>
           </div>
         </div>
 
@@ -307,30 +376,78 @@
 
       <!-- ===================== PAGE ===================== -->
       <div class="wrap">
-    <div class="pagehead">
-      <div class="title">
-        <span class="wr">%WRENCH%</span>
-        <h1>Workshop Job Cards</h1>
-      </div>
-      <span class="spacer"></span>
-      <div class="search"><input type="text" id="search" placeholder="Search job sheets by name, or ID.."></div>
-      <button class="btn-add" id="addPlant">+ Add Plant Job Sheet</button>
-      <button class="btn-add" id="addVehicle">+ Add Vehicle Job Sheet</button>
-    </div>
+        <!-- ===== Workshop Job Cards page ===== -->
+        <section class="page active" data-page="jobcards">
+          <div class="pagehead">
+            <div class="title">
+              <span class="wr">%WRENCH%</span>
+              <h1>Workshop Job Cards</h1>
+            </div>
+            <span class="spacer"></span>
+            <div class="search"><input type="text" id="search" placeholder="Search job sheets by name, or ID.."></div>
+            <button class="btn-add" id="addPlant">+ Add Plant Job Sheet</button>
+            <button class="btn-add" id="addVehicle">+ Add Vehicle Job Sheet</button>
+          </div>
+          <div class="card">
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Job No.</th><th>Job Type.</th><th>Reg/Fleet No</th><th>Date</th><th>Site</th><th>Fitter</th><th>Equipment / Vehicle</th><th>Status</th><th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="rows"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
 
-    <div class="card">
-      <div class="tbl-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Job No.</th><th>Job Type.</th><th>Reg/Fleet No</th><th>Date</th><th>Site</th><th>Fitter</th><th>Equipment / Vehicle</th><th>Status</th><th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="rows"></tbody>
-        </table>
+        <!-- ===== Parts (stock by category) page ===== -->
+        <section class="page" data-page="parts">
+          <div class="pagehead">
+            <div class="title">
+              <span class="wr" style="color:var(--red)">%BOX%</span>
+              <div><h1>Parts</h1><div class="subttl">Stock by category</div></div>
+            </div>
+            <span class="spacer"></span>
+            <div class="search"><input type="text" id="partsSearch" placeholder="Search parts, brand or part no.."></div>
+            <button class="btn-add" id="addPart">+ Add Part</button>
+          </div>
+
+          <div class="stats" id="partStats"></div>
+
+          <div class="callout">
+            <span class="co-ic">%LINKIC%</span>
+            <div><b>Linked to Workshop Job Cards.</b> When a mechanic assigns parts to a job, the quantity is deducted from stock here &mdash; each part keeps its full job-card usage history.</div>
+          </div>
+
+          <div class="psec">Categories <span id="catCount" style="color:var(--red-dark);background:#fdeae9;padding:2px 9px;border-radius:999px;font-size:12px;letter-spacing:0">7</span></div>
+          <div class="catgrid" id="catGrid"></div>
+
+          <div class="psec" style="margin-top:28px">Recent job-card usage</div>
+          <div class="card"><div class="tbl-wrap"><table class="ptbl">
+            <thead><tr><th>Part</th><th>Part No.</th><th>Job</th><th>Equipment / Vehicle</th><th>Qty</th><th>Mechanic</th><th>Date</th></tr></thead>
+            <tbody id="usageRows"></tbody>
+          </table></div></div>
+        </section>
+
+        <!-- ===== Category detail page ===== -->
+        <section class="page" data-page="partcat">
+          <div class="pagehead">
+            <div class="title" style="gap:14px">
+              <button class="backbtn" data-nav="parts">%ARROWL% Back</button>
+              <div><h1 id="pcTitle">Category</h1><div class="subttl" id="pcCount">0 parts</div></div>
+            </div>
+            <span class="spacer"></span>
+            <div class="search"><input type="text" id="pcSearch" placeholder="Search this category.."></div>
+            <button class="btn-add" id="addPartCat">+ Add Part</button>
+          </div>
+          <div class="card"><div class="tbl-wrap"><table class="ptbl">
+            <thead><tr><th>Part</th><th>Brand</th><th>Part No.</th><th>In Stock</th><th>Used in Jobs</th><th>Status</th><th></th></tr></thead>
+            <tbody id="pcRows"></tbody>
+          </table></div></div>
+        </section>
       </div>
-    </div>
-  </div>
     </div>
   </div>
 
@@ -410,6 +527,44 @@
       </div>
       <div class="m-foot"><button class="btn grey" data-close>Cancel</button><button class="btn red" id="delConfirm">Delete</button></div>
     </div>
+
+    <!-- Part detail -->
+    <div class="modal" id="mPart" style="display:none">
+      <div class="m-head"><h3><span class="hw">%BOX%</span><span id="ptTitle">Part</span></h3><button class="x" data-close>&times;</button></div>
+      <div class="m-body">
+        <div class="detail-grid" id="ptBody"></div>
+        <div class="usebox">
+          <div class="ub-h">Used in job cards <span id="ptUsedTot"></span></div>
+          <div id="ptUsage"></div>
+        </div>
+      </div>
+      <div class="m-foot"><button class="btn grey" data-close>Close</button><button class="btn ghost" id="ptEdit">Edit part</button></div>
+    </div>
+
+    <!-- Add Part -->
+    <div class="modal" id="mAddPart" style="display:none">
+      <div class="m-head"><h3><span class="hw">%BOX%</span>Add Part</h3><button class="x" data-close>&times;</button></div>
+      <div class="m-body">
+        <div class="frow">
+          <div class="field"><label>Part name</label><input class="control" id="apName" placeholder="e.g. Engine Oil Filter"></div>
+          <div class="field"><label>Category</label><select class="control" id="apCat"></select></div>
+        </div>
+        <div class="frow">
+          <div class="field"><label>Brand</label><input class="control" id="apBrand" placeholder="e.g. Fleetguard"></div>
+          <div class="field"><label>Part number</label><input class="control" id="apPn" placeholder="e.g. LF9009"></div>
+        </div>
+        <div class="frow f3">
+          <div class="field"><label>Qty in stock</label><input class="control" type="number" id="apStock" placeholder="0"></div>
+          <div class="field"><label>Min stock level</label><input class="control" type="number" id="apMin" placeholder="2"></div>
+          <div class="field"><label>Unit cost <span class="opt">&euro;</span></label><input class="control" type="number" step="0.01" id="apCost" placeholder="0.00"></div>
+        </div>
+        <div class="frow">
+          <div class="field"><label>Supplier <span class="opt">optional</span></label><input class="control" id="apSup" placeholder="e.g. Donaldson Ltd"></div>
+          <div class="field"><label>Location / Bin <span class="opt">optional</span></label><input class="control" id="apLoc" placeholder="e.g. A1-03"></div>
+        </div>
+      </div>
+      <div class="m-foot"><button class="btn grey" data-close>Cancel</button><button class="btn red" id="savePart">Save Part</button></div>
+    </div>
   </div>
 
   <div class="toast" id="toast"><span class="d"></span><span id="toastMsg"></span></div>
@@ -432,6 +587,9 @@ const I={
   CHATIC:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.9 7.6L3 21l1.9-6A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg>',
   PLUS_S:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
   TRASH:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>',
+  BOX:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>',
+  LINKIC:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 14.5l5-5"/><path d="M11 6.5l1-1a4 4 0 0 1 5.7 5.7l-1 1"/><path d="M13 17.5l-1 1a4 4 0 0 1-5.7-5.7l1-1"/></svg>',
+  ARROWL:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>',
 };
 
 const DATA={
@@ -621,6 +779,149 @@ document.getElementById('delConfirm').addEventListener('click',()=>{
   if(delIdx!=null){const no=jobs[delIdx].no;jobs.splice(delIdx,1);render();toast('Job sheet #'+no+' deleted');delIdx=null;}
   closeModal();
 });
+
+/* ================= PARTS MODULE ================= */
+const CATS=['Air Filters','Oil Filters','Fuel Filters','Hydraulics','Belts','Fluids','Electrical'];
+let parts=[
+  {id:'P-1001',cat:'Air Filters',name:'Outer Air Filter',brand:'Donaldson',pn:'P181050',stock:5,min:2,cost:42.00,supplier:'Donaldson Ltd',loc:'A1-03',usedIn:[{job:'job41',equip:'Rigid · 201-SO-5566',qty:1,by:'James',date:'10 Aug 2026'}]},
+  {id:'P-1002',cat:'Air Filters',name:'Inner Air Filter',brand:'Fleetguard',pn:'AF25550',stock:3,min:2,cost:28.50,supplier:'Fleetguard',loc:'A1-04',usedIn:[]},
+  {id:'P-1003',cat:'Air Filters',name:'Cab Air Filter',brand:'Baldwin',pn:'PA2815',stock:1,min:2,cost:15.75,supplier:'Baldwin',loc:'A1-05',usedIn:[{job:'job38',equip:'Rigid · Scania P410',qty:1,by:'James',date:'10 Aug 2026'}]},
+  {id:'P-1010',cat:'Oil Filters',name:'Engine Oil Filter',brand:'Fleetguard',pn:'LF9009',stock:8,min:3,cost:18.90,supplier:'Fleetguard',loc:'B2-01',usedIn:[{job:'job39',equip:'Sweeper · Atego',qty:1,by:'Alexandru',date:'05 Aug 2026'}]},
+  {id:'P-1011',cat:'Oil Filters',name:'Hydraulic Oil Filter',brand:'Donaldson',pn:'P164378',stock:1,min:2,cost:55.00,supplier:'Donaldson Ltd',loc:'B2-02',usedIn:[]},
+  {id:'P-1020',cat:'Fuel Filters',name:'Primary Fuel Filter',brand:'Fleetguard',pn:'FS19765',stock:6,min:3,cost:24.00,supplier:'Fleetguard',loc:'B3-01',usedIn:[{job:'job31',equip:'Bell (1234)',qty:1,by:'Kila',date:'06 Aug 2026'}]},
+  {id:'P-1021',cat:'Fuel Filters',name:'Secondary Fuel Filter',brand:'Racor',pn:'R90P',stock:4,min:2,cost:12.50,supplier:'Parker Racor',loc:'B3-02',usedIn:[]},
+  {id:'P-1030',cat:'Hydraulics',name:'Hydraulic Hose 1/2"',brand:'Gates',pn:'8M4K-08',stock:4,min:2,cost:34.00,supplier:'Gates',loc:'C1-06',usedIn:[{job:'job31',equip:'Bell (1234)',qty:1,by:'Kila',date:'06 Aug 2026'}]},
+  {id:'P-1031',cat:'Hydraulics',name:'Hydraulic Coupling',brand:'Parker',pn:'FF-08',stock:0,min:2,cost:21.00,supplier:'Parker',loc:'C1-07',usedIn:[]},
+  {id:'P-1040',cat:'Belts',name:'Alternator Belt',brand:'Gates',pn:'6PK1795',stock:3,min:2,cost:19.50,supplier:'Gates',loc:'D2-01',usedIn:[]},
+  {id:'P-1041',cat:'Belts',name:'Fan Belt',brand:'Dayco',pn:'5060915',stock:2,min:2,cost:16.00,supplier:'Dayco',loc:'D2-02',usedIn:[]},
+  {id:'P-1050',cat:'Fluids',name:'Engine Coolant 5L',brand:'Comma',pn:'XSTREAM G30',stock:12,min:4,cost:22.00,supplier:'Comma Oil',loc:'E1-01',usedIn:[]},
+  {id:'P-1051',cat:'Fluids',name:'Hydraulic Oil 20L',brand:'Shell',pn:'Tellus S2 M46',stock:5,min:2,cost:78.00,supplier:'Shell',loc:'E1-02',usedIn:[{job:'job31',equip:'Bell (1234)',qty:1,by:'Kila',date:'06 Aug 2026'}]},
+  {id:'P-1060',cat:'Electrical',name:'Glow Plug',brand:'Bosch',pn:'0250203001',stock:4,min:4,cost:11.20,supplier:'Bosch',loc:'F3-01',usedIn:[{job:'job30',equip:'Test title (123)',qty:2,by:'Kila',date:'05 Aug 2026'}]},
+];
+let partSeq=1061, currentCat=null;
+const partsSearch=document.getElementById('partsSearch');
+const pcSearch=document.getElementById('pcSearch');
+
+function stockStatus(p){return p.stock<=0?'out':p.stock<=p.min?'low':'in';}
+function stockLabel(s){return s==='out'?'Out of stock':s==='low'?'Low stock':'In stock';}
+function usedQty(p){return p.usedIn.reduce((a,u)=>a+u.qty,0);}
+function catStat(c){const ps=parts.filter(p=>p.cat===c);return{c,n:ps.length,units:ps.reduce((a,p)=>a+p.stock,0),low:ps.filter(p=>stockStatus(p)!=='in').length};}
+function statTile(color,icon,val,label){return `<div class="stat"><span class="si ${color}">${icon}</span><div><div class="sv">${val}</div><div class="sl">${label}</div></div></div>`;}
+
+function renderParts(){
+  const totalParts=parts.length;
+  const totalUnits=parts.reduce((a,p)=>a+p.stock,0);
+  const lowOut=parts.filter(p=>stockStatus(p)!=='in').length;
+  const usedUnits=parts.reduce((a,p)=>a+usedQty(p),0);
+  document.getElementById('partStats').innerHTML=
+    statTile('blue',I.BOX,totalParts,'Distinct parts')+
+    statTile('green',I.BOX,totalUnits,'Units in stock')+
+    statTile('amber',I.ALERT,lowOut,'Low / out of stock')+
+    statTile('red',I.WRENCH,usedUnits,'Units used in jobs');
+  document.getElementById('catCount').textContent=CATS.length;
+  const q=(partsSearch.value||'').toLowerCase();
+  const cats=CATS.map(catStat).filter(x=>!q||x.c.toLowerCase().includes(q)||parts.some(p=>p.cat===x.c&&(p.name+p.brand+p.pn).toLowerCase().includes(q)));
+  document.getElementById('catGrid').innerHTML=cats.length?cats.map(x=>`
+    <button class="catcard" data-cat="${esc(x.c)}">
+      <span class="ci">${I.BOX}</span>
+      <span class="cmid"><span class="cname">${esc(x.c)}</span><span class="cmeta">${x.n} part${x.n!==1?'s':''} &middot; ${x.units} in stock${x.low?` &middot; <span class="lowtag">${x.low} low</span>`:''}</span></span>
+      <span class="cbadge">${x.n}</span>
+      <span class="cchev">${I.CHEVR}</span>
+    </button>`).join(''):`<div class="empty">No categories match your search.</div>`;
+  const usage=parts.flatMap(p=>p.usedIn.map(u=>({...u,part:p.name,pn:p.pn}))).slice(0,8);
+  document.getElementById('usageRows').innerHTML=usage.length?usage.map(u=>`
+    <tr><td style="font-weight:700">${esc(u.part)}</td><td class="pn">${esc(u.pn)}</td>
+    <td><span class="u-job" data-gojob style="font-weight:800;color:var(--blue);cursor:pointer">#${esc(u.job)}</span></td>
+    <td class="pn">${esc(u.equip)}</td><td style="font-weight:700">${u.qty}</td><td>${esc(u.by)}</td><td class="pn">${esc(u.date)}</td></tr>`).join('')
+    :`<tr><td colspan="7" class="empty">No job-card usage recorded yet.</td></tr>`;
+}
+
+function openCategory(c){
+  currentCat=c; if(pcSearch) pcSearch.value='';
+  document.getElementById('pcTitle').textContent=c;
+  showPage('partcat'); setNav('parts');
+  renderCatParts();
+}
+function renderCatParts(){
+  const ps=parts.filter(p=>p.cat===currentCat);
+  document.getElementById('pcCount').textContent=`${ps.length} part${ps.length!==1?'s':''}`;
+  const q=(pcSearch.value||'').toLowerCase();
+  const list=ps.filter(p=>!q||(p.name+p.brand+p.pn).toLowerCase().includes(q));
+  document.getElementById('pcRows').innerHTML=list.length?list.map(p=>{
+    const s=stockStatus(p),u=p.usedIn.length;
+    return `<tr>
+      <td style="font-weight:700">${esc(p.name)}</td>
+      <td>${esc(p.brand)}</td>
+      <td class="pn">${esc(p.pn)}</td>
+      <td><span class="pstock">${p.stock}</span> <small style="color:var(--sub)">/ min ${p.min}</small></td>
+      <td>${u?`<span class="usedchip">${u} job${u!==1?'s':''} &middot; ${usedQty(p)} used</span>`:`<span class="usedchip none">Not used</span>`}</td>
+      <td><span class="stk ${s}"><span class="bd"></span>${stockLabel(s)}</span></td>
+      <td><div class="acts"><button class="a-view" data-pview="${esc(p.id)}">View</button><button class="a-edit" data-pedit="${esc(p.id)}">Edit</button></div></td>
+    </tr>`;
+  }).join(''):`<tr><td colspan="7" class="empty">No parts in this category${q?' match your search':''}.</td></tr>`;
+}
+
+function openPart(id){
+  const p=parts.find(x=>x.id===id); if(!p)return;
+  document.getElementById('ptTitle').textContent=p.name;
+  const s=stockStatus(p);
+  document.getElementById('ptBody').innerHTML=
+    dRow('Part number',esc(p.pn))+dRow('Brand',esc(p.brand))+dRow('Category',esc(p.cat))+
+    dRow('Status',`<span class="stk ${s}"><span class="bd"></span>${stockLabel(s)}</span>`)+
+    dRow('In stock',`${p.stock} unit${p.stock!==1?'s':''}`)+dRow('Min level',p.min)+
+    dRow('Location / Bin',esc(p.loc))+dRow('Unit cost',p.cost!=null?('&euro;'+(+p.cost).toFixed(2)):'—')+
+    dRow('Supplier',esc(p.supplier),true);
+  const tot=usedQty(p);
+  document.getElementById('ptUsedTot').textContent=tot?`· ${tot} unit${tot!==1?'s':''} across ${p.usedIn.length} job${p.usedIn.length!==1?'s':''}`:'';
+  document.getElementById('ptUsage').innerHTML=p.usedIn.length?p.usedIn.map(u=>`
+    <div class="urow"><div><div class="u-job" data-gojob>#${esc(u.job)}</div><div class="u-sub">${esc(u.equip)} &middot; ${esc(u.by)}</div></div>
+    <div class="u-r"><b>${u.qty} used</b>${esc(u.date)}</div></div>`).join('')
+    :`<div class="usenone">Not yet used on any job card.</div>`;
+  openModal('mPart');
+}
+
+opt(document.getElementById('apCat'),CATS,'Select category');
+function openAddPart(cat){
+  ['apName','apBrand','apPn','apStock','apCost','apSup','apLoc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('apMin').value='2';
+  document.getElementById('apCat').value=(cat&&CATS.includes(cat))?cat:'';
+  openModal('mAddPart');
+}
+document.getElementById('addPart').addEventListener('click',()=>openAddPart());
+document.getElementById('addPartCat').addEventListener('click',()=>openAddPart(currentCat));
+document.getElementById('savePart').addEventListener('click',()=>{
+  const name=document.getElementById('apName').value.trim();
+  const cat=document.getElementById('apCat').value;
+  if(!name){toast('Enter a part name');return;}
+  if(!cat){toast('Select a category');return;}
+  parts.push({id:'P-'+(partSeq++),cat,name,brand:document.getElementById('apBrand').value.trim()||'—',
+    pn:document.getElementById('apPn').value.trim()||'—',stock:+document.getElementById('apStock').value||0,
+    min:+document.getElementById('apMin').value||0,cost:parseFloat(document.getElementById('apCost').value)||0,
+    supplier:document.getElementById('apSup').value.trim()||'—',loc:document.getElementById('apLoc').value.trim()||'—',usedIn:[]});
+  renderParts();
+  if(currentCat===cat&&document.querySelector('.page[data-page="partcat"]').classList.contains('active'))renderCatParts();
+  closeModal(); toast('Part "'+name+'" added to '+cat);
+});
+document.getElementById('ptEdit').addEventListener('click',()=>{closeModal();toast('Edit — demo is read-only for existing parts');});
+if(partsSearch) partsSearch.addEventListener('input',renderParts);
+if(pcSearch) pcSearch.addEventListener('input',renderCatParts);
+
+/* ---------- page routing ---------- */
+function showPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.dataset.page===name));window.scrollTo(0,0);if(window.matchMedia('(max-width:900px)').matches)document.body.classList.remove('snav-open');}
+function setNav(name){
+  document.querySelectorAll('.snav .item,.snav .sub').forEach(a=>a.classList.remove('active'));
+  if(name==='jobcards'){const el=document.querySelector('.item[data-nav="jobcards"]');if(el)el.classList.add('active');}
+  else if(name==='parts'||name==='partcat'){const el=document.querySelector('.sub[data-nav="parts"]');if(el)el.classList.add('active');}
+}
+document.addEventListener('click',e=>{
+  const pg=e.target.closest('[data-nav]');
+  if(pg){const n=pg.dataset.nav; if(n==='parts'){renderParts();showPage('parts');setNav('parts');}else if(n==='jobcards'){showPage('jobcards');setNav('jobcards');} return;}
+  const cc=e.target.closest('[data-cat]'); if(cc){openCategory(cc.dataset.cat);return;}
+  const pv=e.target.closest('[data-pview]'); if(pv){openPart(pv.dataset.pview);return;}
+  const pe=e.target.closest('[data-pedit]'); if(pe){toast('Edit — demo is read-only for existing parts');return;}
+  const gj=e.target.closest('[data-gojob]'); if(gj){closeModal();showPage('jobcards');setNav('jobcards');toast('Opening '+gj.textContent.trim());return;}
+});
+renderParts();
 
 /* toast */
 let tt;const toastEl=document.getElementById('toast'),toastMsg=document.getElementById('toastMsg');
