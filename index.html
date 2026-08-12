@@ -266,6 +266,19 @@
   .urow .u-r b{color:#20242a;font-size:14px;display:block}
   .usenone{color:var(--sub);font-size:13.5px;font-style:italic;padding:8px 0}
 
+  /* ---------- GA1 certificate ---------- */
+  .gtbl .srn{font-weight:700;color:#20242a}
+  .gdoc{color:var(--red);display:inline-flex;cursor:pointer}
+  .gdoc svg{width:22px;height:26px}
+  .gact{display:flex;gap:14px;align-items:center}
+  .gact button{background:none;border:0;cursor:pointer;padding:2px;display:inline-flex}
+  .gact .edit{color:var(--green)}
+  .gact .del{color:var(--red)}
+  .gact svg{width:18px;height:18px}
+  .upl{border:1.5px dashed #c7cdd5;border-radius:9px;padding:16px;text-align:center;color:var(--sub);font-size:14px;cursor:pointer;font-weight:600}
+  .upl:hover{border-color:var(--red);color:var(--red)}
+  .upl.on{border-color:var(--green);color:var(--green);background:var(--green-bg);font-weight:700}
+
   /* toast */
   .toast{position:fixed;right:26px;bottom:26px;background:#20242a;color:#fff;padding:14px 20px;border-radius:10px;font-size:14.5px;font-weight:600;z-index:80;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px);transition:.28s;box-shadow:0 14px 34px -10px rgba(0,0,0,.5)}
   .toast .d{width:9px;height:9px;border-radius:50%;background:#4ade80}
@@ -349,6 +362,7 @@
             <a class="sub" data-stub="Machines Category"><span class="cr">%CHEVR%</span>Machines Category</a>
             <a class="sub" data-stub="GA2 Checklist"><span class="cr">%CHEVR%</span>GA2 Checklist</a>
             <a class="sub" data-stub="GA2 Summary"><span class="cr">%CHEVR%</span>GA2 Summary</a>
+            <a class="sub" data-nav="ga1"><span class="cr">%CHEVR%</span>GA1 Certificate</a>
           </div>
         </div>
 
@@ -447,6 +461,24 @@
             <tbody id="pcRows"></tbody>
           </table></div></div>
         </section>
+
+        <!-- ===== GA1 Certificate page ===== -->
+        <section class="page" data-page="ga1">
+          <div class="pagehead">
+            <div class="title">
+              <span class="wr" style="color:var(--red)">%CERT%</span>
+              <div><h1>GA1 Certificate</h1><div class="subttl">Plant machinery test certificates</div></div>
+            </div>
+            <span class="spacer"></span>
+            <button class="backbtn" data-nav="jobcards">%ARROWL% Back</button>
+            <div class="search"><input type="text" id="ga1Search" placeholder="Search reference, equipment or serial.."></div>
+            <button class="btn-add" id="addGa1">+ Add Certificate</button>
+          </div>
+          <div class="card"><div class="tbl-wrap"><table class="ptbl">
+            <thead><tr><th>Sr. No.</th><th>Date</th><th>Reference</th><th>Equipment</th><th>Serial Number</th><th>Year of manufacture</th><th>Documents</th><th>Action</th></tr></thead>
+            <tbody id="ga1Rows"></tbody>
+          </table></div></div>
+        </section>
       </div>
     </div>
   </div>
@@ -519,11 +551,11 @@
 
     <!-- Delete confirm -->
     <div class="modal confirm" id="mDel" style="display:none">
-      <div class="m-head"><h3>Delete job sheet</h3><button class="x" data-close>&times;</button></div>
+      <div class="m-head"><h3>Confirm delete</h3><button class="x" data-close>&times;</button></div>
       <div class="m-body">
         <div class="cico">%TRASH%</div>
-        <h4 id="delTitle">Delete this job sheet?</h4>
-        <p>This cannot be undone. The job card will be removed from the workshop list.</p>
+        <h4 id="delTitle">Delete this record?</h4>
+        <p>This cannot be undone. The record will be permanently removed.</p>
       </div>
       <div class="m-foot"><button class="btn grey" data-close>Cancel</button><button class="btn red" id="delConfirm">Delete</button></div>
     </div>
@@ -565,6 +597,26 @@
       </div>
       <div class="m-foot"><button class="btn grey" data-close>Cancel</button><button class="btn red" id="savePart">Save Part</button></div>
     </div>
+
+    <!-- Add GA1 certificate -->
+    <div class="modal" id="mGa1" style="display:none">
+      <div class="m-head"><h3><span class="hw">%CERT%</span>Add GA1 Certificate</h3><button class="x" data-close>&times;</button></div>
+      <div class="m-body">
+        <div class="frow">
+          <div class="field"><label>Date</label><input class="control" id="gDate" value="2026-08-12 00:00:00"></div>
+          <div class="field"><label>Reference</label><input class="control" id="gRef" placeholder="e.g. 01cw5079"></div>
+        </div>
+        <div class="field"><label>Equipment</label><input class="control" id="gEquip" placeholder="e.g. New Holland TM125"></div>
+        <div class="frow">
+          <div class="field"><label>Serial Number</label><input class="control" id="gSerial" placeholder="e.g. 165113B"></div>
+          <div class="field"><label>Year of manufacture <span class="opt">/ make</span></label><input class="control" id="gMan" placeholder="e.g. New Holland"></div>
+        </div>
+        <div class="field"><label>Certificate document <span class="opt">PDF</span></label>
+          <div class="upl" id="gUpl">Click to attach certificate PDF</div>
+        </div>
+      </div>
+      <div class="m-foot"><button class="btn grey" data-close>Cancel</button><button class="btn red" id="saveGa1">Save Certificate</button></div>
+    </div>
   </div>
 
   <div class="toast" id="toast"><span class="d"></span><span id="toastMsg"></span></div>
@@ -590,6 +642,9 @@ const I={
   BOX:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>',
   LINKIC:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 14.5l5-5"/><path d="M11 6.5l1-1a4 4 0 0 1 5.7 5.7l-1 1"/><path d="M13 17.5l-1 1a4 4 0 0 1-5.7-5.7l1-1"/></svg>',
   ARROWL:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>',
+  CERT:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M9 14l-2 7 5-3 5 3-2-7"/></svg>',
+  PENCIL:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+  FILEPDF:'<svg viewBox="0 0 24 28" fill="none"><path d="M3 2h11l6 6v18a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" fill="#e2352c"/><path d="M14 2l6 6h-6z" fill="#a51b14"/><text x="10.5" y="21" font-family="Arial,sans-serif" font-size="6.5" font-weight="700" fill="#fff" text-anchor="middle">PDF</text></svg>',
 };
 
 const DATA={
@@ -752,7 +807,7 @@ document.getElementById('saveJob').addEventListener('click',()=>{
 
 /* ---------- row actions ---------- */
 function dRow(k,v,span){return `<div${span?' class="span2"':''}><div class="d-k">${k}</div><div class="d-v">${v||'—'}</div></div>`;}
-let delIdx=null;
+let delIdx=null, delKind='job';
 document.addEventListener('click',e=>{
   const v=e.target.closest('[data-view]'),ed=e.target.closest('[data-edit]'),pd=e.target.closest('[data-pdf]'),dl=e.target.closest('[data-del]'),stub=e.target.closest('[data-stub]');
   if(v){
@@ -770,13 +825,17 @@ document.addEventListener('click',e=>{
   }
   if(ed){toast('Edit — demo is read-only for existing records');return;}
   if(pd){const j=jobs[+pd.dataset.pdf];toast('Generating PDF for #'+j.no+'…');return;}
-  if(dl){delIdx=+dl.dataset.del;document.getElementById('delTitle').textContent='Delete job sheet #'+jobs[delIdx].no+'?';openModal('mDel');return;}
+  if(dl){delKind='job';delIdx=+dl.dataset.del;document.getElementById('delTitle').textContent='Delete job sheet #'+jobs[delIdx].no+'?';openModal('mDel');return;}
   if(stub){toast(stub.dataset.stub+' — coming soon');return;}
 });
 document.getElementById('vEdit').addEventListener('click',()=>{closeModal();toast('Edit — demo is read-only for existing records');});
 document.getElementById('vPdf').addEventListener('click',()=>toast('Generating PDF…'));
 document.getElementById('delConfirm').addEventListener('click',()=>{
-  if(delIdx!=null){const no=jobs[delIdx].no;jobs.splice(delIdx,1);render();toast('Job sheet #'+no+' deleted');delIdx=null;}
+  if(delIdx!=null){
+    if(delKind==='ga1'){const s=ga1[delIdx].sr;ga1.splice(delIdx,1);renderGa1();toast('Certificate #'+s+' deleted');}
+    else{const no=jobs[delIdx].no;jobs.splice(delIdx,1);render();toast('Job sheet #'+no+' deleted');}
+    delIdx=null;
+  }
   closeModal();
 });
 
@@ -910,18 +969,85 @@ if(pcSearch) pcSearch.addEventListener('input',renderCatParts);
 function showPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.dataset.page===name));window.scrollTo(0,0);if(window.matchMedia('(max-width:900px)').matches)document.body.classList.remove('snav-open');}
 function setNav(name){
   document.querySelectorAll('.snav .item,.snav .sub').forEach(a=>a.classList.remove('active'));
-  if(name==='jobcards'){const el=document.querySelector('.item[data-nav="jobcards"]');if(el)el.classList.add('active');}
-  else if(name==='parts'||name==='partcat'){const el=document.querySelector('.sub[data-nav="parts"]');if(el)el.classList.add('active');}
+  const key=name==='partcat'?'parts':name;
+  const el=document.querySelector(`.snav [data-nav="${key}"]`);
+  if(el)el.classList.add('active');
 }
 document.addEventListener('click',e=>{
   const pg=e.target.closest('[data-nav]');
-  if(pg){const n=pg.dataset.nav; if(n==='parts'){renderParts();showPage('parts');setNav('parts');}else if(n==='jobcards'){showPage('jobcards');setNav('jobcards');} return;}
+  if(pg){const n=pg.dataset.nav; showPage(n); setNav(n); if(n==='parts')renderParts(); if(n==='ga1')renderGa1(); return;}
   const cc=e.target.closest('[data-cat]'); if(cc){openCategory(cc.dataset.cat);return;}
   const pv=e.target.closest('[data-pview]'); if(pv){openPart(pv.dataset.pview);return;}
   const pe=e.target.closest('[data-pedit]'); if(pe){toast('Edit — demo is read-only for existing parts');return;}
   const gj=e.target.closest('[data-gojob]'); if(gj){closeModal();showPage('jobcards');setNav('jobcards');toast('Opening '+gj.textContent.trim());return;}
 });
 renderParts();
+
+/* ================= GA1 CERTIFICATE MODULE ================= */
+let ga1=[
+  {sr:99,date:'2026-07-31 00:00:00',ref:'01cw5079',equip:'New Holland TM125',serial:'165113B',man:'New Holland'},
+  {sr:98,date:'2026-07-31 00:00:00',ref:'002',equip:'JCB 540-180',serial:'14-344-007',man:'JCB'},
+  {sr:97,date:'2026-07-30 00:00:00',ref:'35',equip:'KX057-4',serial:'JKUK0575C01H56834',man:'Kubota'},
+  {sr:96,date:'2026-07-28 00:00:00',ref:'01cw5079',equip:'New Holland TM125',serial:'165113B',man:'New Holland'},
+  {sr:95,date:'2026-06-08 00:00:00',ref:'001',equip:'BOMAG BW 213 D-5 PL',serial:'101585541219',man:'BOMAG'},
+  {sr:94,date:'2026-06-05 00:00:00',ref:'002',equip:'JCB 540-180',serial:'14-344-007',man:'JCB'},
+  {sr:93,date:'2026-06-02 00:00:00',ref:'002',equip:'JCB 540-180',serial:'14-344-007',man:'JCB'},
+  {sr:92,date:'2026-05-26 00:00:00',ref:'Hedge Cutter PA6500TL405',equip:'Hedge Cutter PA6500TL405',serial:'7765904051',man:'F.W.'},
+  {sr:91,date:'2026-05-25 00:00:00',ref:'87-CW-1069',equip:'Ford 7610',serial:'BB04054',man:'FORD'},
+  {sr:90,date:'2026-05-26 00:00:00',ref:'Hedge Cutter 2070NE',equip:'Hedge Cutter 2070NE',serial:'2070001',man:'F.W. McConnel'},
+  {sr:89,date:'2026-05-25 00:00:00',ref:'91-CW-1543',equip:'Ford 7810',serial:'BC74800',man:'FORD'},
+  {sr:87,date:'2026-05-22 00:00:00',ref:'46',equip:'Takeuchi TB175',serial:'17520536',man:'Takeuchi'},
+  {sr:86,date:'2026-05-22 00:00:00',ref:'46',equip:'Takeuchi TB175',serial:'17520536',man:'Takeuchi'},
+  {sr:85,date:'2026-04-27 00:00:00',ref:'118',equip:'Zx30 2005',serial:'HCMILSOOKOOO2570',man:'Hitachi'},
+  {sr:84,date:'2026-04-22 00:00:00',ref:'106',equip:'ZX-130LCN-3',serial:'HCMBFT00L00083787',man:'Hitachi'},
+  {sr:82,date:'2026-04-01 00:00:00',ref:'119',equip:'6920 S (06-CW-2369)',serial:'L06920N491661',man:'John Deere'},
+  {sr:81,date:'2026-04-13 00:00:00',ref:'131',equip:'JBC 3CX 14MFWM',serial:'JCB3CX4TTK2825385',man:'JCB'},
+  {sr:80,date:'2026-04-10 00:00:00',ref:'120',equip:'New Holland T7.230 (151-CW-1932)',serial:'ZFBN02234',man:'New Holland'},
+];
+let ga1Seq=100;
+const ga1Search=document.getElementById('ga1Search');
+
+function renderGa1(){
+  const q=(ga1Search.value||'').toLowerCase();
+  const list=ga1.filter(g=>(g.sr+' '+g.ref+' '+g.equip+' '+g.serial+' '+g.man).toLowerCase().includes(q));
+  document.getElementById('ga1Rows').innerHTML=list.length?list.map(g=>{
+    const idx=ga1.indexOf(g);
+    return `<tr>
+      <td class="srn">${g.sr}</td>
+      <td class="pn">${esc(g.date)}</td>
+      <td>${esc(g.ref)}</td>
+      <td style="font-weight:600">${esc(g.equip)}</td>
+      <td class="pn">${esc(g.serial)}</td>
+      <td>${esc(g.man)}</td>
+      <td><span class="gdoc" data-ga1pdf="${idx}" title="Open certificate">${I.FILEPDF}</span></td>
+      <td><div class="gact"><button class="edit" data-ga1edit="${idx}" title="Edit">${I.PENCIL}</button><button class="del" data-ga1del="${idx}" title="Delete">${I.TRASH}</button></div></td>
+    </tr>`;
+  }).join(''):`<tr><td colspan="8" class="empty">No certificates match your search.</td></tr>`;
+}
+if(ga1Search) ga1Search.addEventListener('input',renderGa1);
+
+const gUpl=document.getElementById('gUpl');
+gUpl.addEventListener('click',()=>{gUpl.classList.add('on');gUpl.textContent='GA1_certificate.pdf attached';});
+document.getElementById('addGa1').addEventListener('click',()=>{
+  ['gRef','gEquip','gSerial','gMan'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('gDate').value='2026-08-12 00:00:00';
+  gUpl.classList.remove('on');gUpl.textContent='Click to attach certificate PDF';
+  openModal('mGa1');
+});
+document.getElementById('saveGa1').addEventListener('click',()=>{
+  const equip=document.getElementById('gEquip').value.trim();
+  if(!equip){toast('Enter the equipment');return;}
+  ga1.unshift({sr:ga1Seq++,date:document.getElementById('gDate').value||'2026-08-12 00:00:00',
+    ref:document.getElementById('gRef').value.trim()||'—',equip,
+    serial:document.getElementById('gSerial').value.trim()||'—',man:document.getElementById('gMan').value.trim()||'—'});
+  renderGa1();closeModal();toast('GA1 certificate #'+(ga1Seq-1)+' added');
+});
+document.addEventListener('click',e=>{
+  const pe=e.target.closest('[data-ga1edit]'); if(pe){toast('Edit — demo is read-only for existing certificates');return;}
+  const pf=e.target.closest('[data-ga1pdf]'); if(pf){toast('Opening GA1 certificate PDF…');return;}
+  const dd=e.target.closest('[data-ga1del]'); if(dd){delKind='ga1';delIdx=+dd.dataset.ga1del;document.getElementById('delTitle').textContent='Delete GA1 certificate #'+ga1[delIdx].sr+'?';openModal('mDel');return;}
+});
+renderGa1();
 
 /* toast */
 let tt;const toastEl=document.getElementById('toast'),toastMsg=document.getElementById('toastMsg');
