@@ -279,6 +279,36 @@
   .upl:hover{border-color:var(--red);color:var(--red)}
   .upl.on{border-color:var(--green);color:var(--green);background:var(--green-bg);font-weight:700}
 
+  /* GA1 certificate document render */
+  .certwrap{background:#e9ebef;padding:16px;border-radius:6px}
+  .ga1doc{background:#fff;max-width:720px;margin:0 auto;padding:24px 28px;color:#111;font-size:12.5px;line-height:1.38;border:1px solid #ccc;box-shadow:0 3px 14px rgba(0,0,0,.1)}
+  .ga1doc .gd-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:6px}
+  .ga1doc .gd-logo{width:64px;flex:0 0 auto;text-align:center;padding-top:2px}
+  .ga1doc .gd-logo .tri{width:0;height:0;border-left:17px solid transparent;border-right:17px solid transparent;border-bottom:28px solid #1f2f6b;margin:0 auto}
+  .ga1doc .gd-logo .hsa{font-size:6.5px;font-weight:800;color:#1f2f6b;margin-top:3px;letter-spacing:.02em;line-height:1.2}
+  .ga1doc .gd-h{flex:1;font-size:21px;font-weight:800;margin-top:6px}
+  .ga1doc .gd-ga1{font-size:24px;font-weight:800;margin-top:2px}
+  .ga1doc .gd-note{border:1.5px solid #111;padding:9px 11px;font-size:10.5px;line-height:1.4;margin:10px 0 14px}
+  .ga1doc .gd-note .nh{font-weight:800;margin-bottom:3px}
+  .ga1doc .fld{margin-bottom:11px}
+  .ga1doc .fld .l{font-weight:700;margin-bottom:4px}
+  .ga1doc .fld .l small{font-weight:400;color:#444}
+  .ga1doc .bx{border:1px solid #111;padding:6px 9px;min-height:30px;font-size:12px;word-break:break-word}
+  .ga1doc .two{display:flex;gap:14px;margin-bottom:11px}
+  .ga1doc .two>div{flex:1;margin-bottom:0}
+  .ga1doc .inline{display:flex;gap:8px;align-items:center}
+  .ga1doc .inline .l{white-space:nowrap;font-weight:700;margin-bottom:0}
+  .ga1doc .refbx{display:flex;gap:3px;flex-wrap:wrap}
+  .ga1doc .refbx span{border:1px solid #111;width:20px;height:26px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+  .ga1doc .swl{width:100%;border-collapse:collapse;margin:4px 0 12px}
+  .ga1doc .swl th{background:#1f2f6b;color:#fff;padding:8px;font-size:12px;border:1px solid #1f2f6b;text-align:center}
+  .ga1doc .swl td{border:1px solid #111;padding:8px;height:30px;font-size:12px}
+  .ga1doc .swl .c1{width:26%;text-align:center;font-weight:700}
+  .ga1doc .chk{display:flex;gap:30px;margin:12px 0}
+  .ga1doc .chk .c{display:flex;align-items:center;gap:8px;font-weight:700}
+  .ga1doc .chk .b{width:15px;height:15px;border:1.5px solid #111;display:inline-flex;align-items:center;justify-content:center;font-size:12px;line-height:1}
+  .ga1doc .gd-foot{display:flex;justify-content:space-between;border-top:1px solid #111;margin-top:14px;padding-top:8px;font-size:11px;font-weight:700}
+
   /* toast */
   .toast{position:fixed;right:26px;bottom:26px;background:#20242a;color:#fff;padding:14px 20px;border-radius:10px;font-size:14.5px;font-weight:600;z-index:80;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px);transition:.28s;box-shadow:0 14px 34px -10px rgba(0,0,0,.5)}
   .toast .d{width:9px;height:9px;border-radius:50%;background:#4ade80}
@@ -475,7 +505,7 @@
             <button class="btn-add" id="addGa1">+ Add Certificate</button>
           </div>
           <div class="card"><div class="tbl-wrap"><table class="ptbl">
-            <thead><tr><th>Sr. No.</th><th>Date</th><th>Reference</th><th>Equipment</th><th>Serial Number</th><th>Year of manufacture</th><th>Documents</th><th>Action</th></tr></thead>
+            <thead><tr><th>Sr. No.</th><th>Date</th><th>Reference</th><th>Equipment</th><th>Serial Number</th><th>Year of manufacture</th><th>Certificates</th><th>Action</th></tr></thead>
             <tbody id="ga1Rows"></tbody>
           </table></div></div>
         </section>
@@ -616,6 +646,13 @@
         </div>
       </div>
       <div class="m-foot"><button class="btn grey" data-close>Cancel</button><button class="btn red" id="saveGa1">Save Certificate</button></div>
+    </div>
+
+    <!-- GA1 certificate document -->
+    <div class="modal" id="mCert" style="display:none;max-width:860px">
+      <div class="m-head"><h3><span class="hw" style="color:var(--red);width:20px;height:20px">%CERT%</span><span id="certTitle">GA1 Certificate</span></h3><button class="x" data-close>&times;</button></div>
+      <div class="m-body" style="background:#e9ebef;padding:0"><div class="certwrap"><div class="ga1doc" id="ga1doc"></div></div></div>
+      <div class="m-foot"><button class="btn grey" data-close>Close</button><button class="btn red" id="certDownload">Download PDF</button></div>
     </div>
   </div>
 
@@ -1042,9 +1079,54 @@ document.getElementById('saveGa1').addEventListener('click',()=>{
     serial:document.getElementById('gSerial').value.trim()||'—',man:document.getElementById('gMan').value.trim()||'—'});
   renderGa1();closeModal();toast('GA1 certificate #'+(ga1Seq-1)+' added');
 });
+function nextExam(dateStr){try{const d=new Date((dateStr||'').split(' ')[0]+'T00:00:00');d.setMonth(d.getMonth()+6);return d.toISOString().slice(0,10);}catch(e){return '—';}}
+function refBoxes(ref){
+  ref=ref||'';
+  if(ref.length&&ref.length<=10&&!/\s/.test(ref)){
+    const pad=Math.max(0,9-ref.length);
+    return `<div class="refbx">${ref.split('').map(c=>`<span>${esc(c)}</span>`).join('')}${Array.from({length:pad}).map(()=>'<span></span>').join('')}</div>`;
+  }
+  return `<div class="bx" style="flex:1">${esc(ref)||'&nbsp;'}</div>`;
+}
+function renderCert(g){
+  document.getElementById('certTitle').textContent='GA1 Certificate — '+g.equip;
+  document.getElementById('ga1doc').innerHTML=`
+    <div class="gd-top">
+      <div class="gd-logo"><div class="tri"></div><div class="hsa">HEALTH AND SAFETY AUTHORITY</div></div>
+      <div class="gd-h">Report of Thorough Examination</div>
+      <div class="gd-ga1">GA1</div>
+    </div>
+    <div class="gd-note"><div class="nh">NOTE:</div>This form may be used to record the thorough examination and testing of Lifting Equipment, as set out in the Safety, Health and Welfare at Work (General Application) Regulations, 2007. This form must be completed by a <b>competent</b> person. This is not an approved or statutory form.</div>
+    <div class="two" style="align-items:flex-end">
+      <div class="inline"><span class="l">Date:</span><div class="bx" style="flex:1">${esc((g.date||'').split(' ')[0])}</div></div>
+      <div class="inline"><span class="l">Reference:</span>${refBoxes(g.ref)}</div>
+    </div>
+    <div class="fld"><div class="l">Name and address of employer or owner for whom the thorough examination was made: <small>(Please include a contact number and email, if possible)</small></div><div class="bx">McMunn Sligo Plant Hire &amp; Haulage Ltd., Carrowroe, Co. Sligo &middot; +353 71 916 0000 &middot; office@mcmunn.ie</div></div>
+    <div class="fld"><div class="l">Address where thorough examination was made:</div><div class="bx">McMunn Workshop, Depot SV101, Co. Sligo</div></div>
+    <div class="fld"><div class="l">Particulars identifying the lifting equipment:</div><div class="bx">${esc(g.equip)} &mdash; Serial ${esc(g.serial)} (${esc(g.man)})</div></div>
+    <div class="fld"><div class="l">Type of lifting equipment:</div><div class="bx">${esc(g.equip)}</div></div>
+    <div class="two">
+      <div class="inline"><span class="l">Serial Number:</span><div class="bx" style="flex:1">${esc(g.serial)}</div></div>
+      <div class="inline"><span class="l">Year of manufacture:</span><div class="bx" style="flex:1">${esc(g.man)}</div></div>
+    </div>
+    <table class="swl"><thead><tr><th class="c1">Safe Working<br>Load</th><th>Configuration(s)</th></tr></thead>
+    <tbody><tr><td class="c1">3,000 kg</td><td>Standard configuration &mdash; as per manufacturer&rsquo;s instructions</td></tr>
+    <tr><td class="c1">&nbsp;</td><td>&nbsp;</td></tr>
+    <tr><td class="c1">&nbsp;</td><td>&nbsp;</td></tr></tbody></table>
+    <div class="chk"><span class="c"><span class="b"></span>Testing</span><span class="c"><span class="b">&#10003;</span>Thorough Examination</span></div>
+    <div class="two">
+      <div class="fld"><div class="l">Purpose of testing:</div><div class="bx" style="min-height:48px">&nbsp;</div></div>
+      <div class="fld"><div class="l">Purpose of thorough examination:</div><div class="bx" style="min-height:48px">Periodic thorough examination under S.I. No. 299 of 2007 (General Application Regulations).</div></div>
+    </div>
+    <div class="fld"><div class="l">Particulars of tests carried out:</div><div class="bx" style="min-height:70px">Visual and functional examination of the lifting equipment, structure and all safety devices. Equipment found to be in safe working order &mdash; no defects observed at the time of examination.</div></div>
+    <div class="inline" style="margin-bottom:12px"><span class="l">Latest date for next thorough examination:</span><div class="bx" style="flex:1">${esc(nextExam(g.date))}</div></div>
+    <div class="gd-foot"><span>Health and Safety Authority: Form GA1 (Revision 2012)</span><span>Page 1 of 2</span></div>`;
+}
+document.getElementById('certDownload').addEventListener('click',()=>toast('Downloading GA1 certificate PDF…'));
+
 document.addEventListener('click',e=>{
   const pe=e.target.closest('[data-ga1edit]'); if(pe){toast('Edit — demo is read-only for existing certificates');return;}
-  const pf=e.target.closest('[data-ga1pdf]'); if(pf){toast('Opening GA1 certificate PDF…');return;}
+  const pf=e.target.closest('[data-ga1pdf]'); if(pf){renderCert(ga1[+pf.dataset.ga1pdf]);openModal('mCert');return;}
   const dd=e.target.closest('[data-ga1del]'); if(dd){delKind='ga1';delIdx=+dd.dataset.ga1del;document.getElementById('delTitle').textContent='Delete GA1 certificate #'+ga1[delIdx].sr+'?';openModal('mDel');return;}
 });
 renderGa1();
