@@ -387,6 +387,16 @@
   .rate-set-box{border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;font-weight:700;background:#f8f9fa}
   .control[readonly]{background:#f8f9fa;color:var(--ink)}
   .dockettotal{display:flex;align-items:center;justify-content:space-between;background:var(--green-bg);border:1px solid #bfe6cd;border-radius:8px;padding:13px 15px;font-weight:800;color:var(--green);font-size:16px;margin-top:4px}
+  /* summary detail table: fit across the page, no horizontal scroll */
+  #sumDetail .ptbl{min-width:0;table-layout:auto;font-size:12.5px}
+  #sumDetail .ptbl th{white-space:normal;padding:10px 6px;font-size:10.5px}
+  #sumDetail .ptbl td{white-space:normal;padding:9px 6px;vertical-align:middle}
+  #sumDetail .ptbl .cell-sub{font-size:10.5px}
+  #sumDetail .actbtns{flex-direction:column;gap:5px;align-items:stretch}
+  #sumDetail .abtn{padding:6px 8px;font-size:11px;gap:5px;justify-content:center}
+  #sumDetail .abtn svg{width:12px;height:12px}
+  #sumDetail .ratedisp,#sumDetail .rstat{font-size:11.5px}
+  #sumDetail .onhirecell{width:24px;height:16px}
 
   /* toast */
   .toast{position:fixed;right:26px;bottom:26px;background:#20242a;color:#fff;padding:14px 20px;border-radius:10px;font-size:14.5px;font-weight:600;z-index:80;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px);transition:.28s;box-shadow:0 14px 34px -10px rgba(0,0,0,.5)}
