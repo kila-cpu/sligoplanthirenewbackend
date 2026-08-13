@@ -360,6 +360,19 @@
   .invtotals .row b{color:var(--ink)}
   .invtotals .row.grand{font-size:18px;font-weight:800;color:var(--ink);border-top:2px solid var(--line);padding-top:9px;margin-top:4px}
   .listfoot{border-top:1px solid var(--line);padding:11px 16px;font-size:13px;color:var(--sub)}
+  .repcap{font-size:13px;color:var(--sub);margin-bottom:12px;line-height:1.5}
+  .repcap b{color:var(--ink)}
+  .rstat{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:800;white-space:nowrap}
+  .rstat.sug{background:#fbeecb;color:#b7791f}
+  .rstat.conf{background:var(--green-bg);color:var(--green)}
+  .rstat.chg{background:#e7f0fe;color:#1683de}
+  .rstat.auto{background:var(--teal-bg);color:#0d7d8e}
+  .confirmbtn{background:var(--green);color:#fff;border:0;border-radius:6px;padding:4px 10px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit}
+  .confirmbtn:hover{background:#1c8f43}
+  .bulkbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:#fff8e7;border:1px solid #f2e0b0;border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:600;color:#7a6420}
+  .bulkbar b{color:var(--ink)}
+  .ratewrap{display:flex;align-items:center;gap:8px}
+  .rateinp.set{border-color:var(--red)}
 
   /* toast */
   .toast{position:fixed;right:26px;bottom:26px;background:#20242a;color:#fff;padding:14px 20px;border-radius:10px;font-size:14.5px;font-weight:600;z-index:80;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px);transition:.28s;box-shadow:0 14px 34px -10px rgba(0,0,0,.5)}
@@ -649,9 +662,15 @@
               <button class="btn red" id="invSearch">Search Report</button>
               <button class="btn grey" id="invBack">Back</button>
             </div>
+            <div class="repcap">Rates are pulled from each customer&rsquo;s <b>set rate card</b>. Confirm or change each rate before exporting &mdash; a changed rate syncs across the app and to any matching loads (same material &amp; route).</div>
             <div class="repactions"><button class="btn green" id="sumPdf2">Generate invoice PDF</button><button class="btn grey" id="sumCsv2">Export CSV</button></div>
+            <div class="bulkbar" id="bulkBar" style="display:none">
+              <span><b id="bulkCount">0</b> load(s) selected</span>
+              <button class="btn green" id="bulkConfirm" style="padding:8px 14px">Confirm selected</button>
+              <span class="ratewrap">Set rate &euro; <input type="number" class="rateinp" id="bulkRate" placeholder="0.00"> <button class="btn red" id="bulkApply" style="padding:8px 14px">Apply to group</button></span>
+            </div>
             <div class="card"><div class="tbl-wrap"><table class="ptbl">
-              <thead><tr><th></th><th>Order</th><th>Customer</th><th>Driver</th><th>Docket No.</th><th>Sit Ref 1/2</th><th>Date</th><th>Created</th><th>Category</th><th>Type</th><th>Weight (t)</th><th>On hire</th><th>On Hire (hrs)</th><th>Rate &euro;</th><th>Total &euro;</th><th>Action</th></tr></thead>
+              <thead><tr><th><input type="checkbox" id="selAll"></th><th>Order</th><th>Customer</th><th>Driver</th><th>Docket No.</th><th>Sit Ref 1/2</th><th>Date</th><th>Created</th><th>Category</th><th>Type</th><th>Weight (t)</th><th>On hire</th><th>On Hire (hrs)</th><th>Rate &euro;</th><th>Status</th><th>Total &euro;</th><th>Action</th></tr></thead>
               <tbody id="invRows"></tbody>
             </table></div></div>
             <div class="invtotals">
@@ -1428,20 +1447,33 @@ renderDefects();
 /* ================= SUMMARY REPORT MODULE ================= */
 let INV=[
   {cust:'Harringtons',email:'accounts@harringtons.ie',phone:'071 916 2200',address:'Ballymote, Co. Sligo',dockets:[
-    {order:1,driver:'Karl',docket:'123',sitRef:'123 / 123',date:'2026-08-04',time:'15:56:08',cat:'Aggregate',type:'804 Stone',weight:'18.5',onHire:true,hours:'3h 0m',rate:0,pod:true},
+    {order:1,driver:'Karl',docket:'123',sitRef:'123 / 123',route:'Depot → Ballymote',date:'2026-08-04',time:'15:56:08',cat:'Aggregate',type:'804 Stone',weight:'18.5',onHire:true,hours:'3h 0m'},
   ]},
   {cust:'Roadstone Ltd',email:'ap@roadstone.ie',phone:'01 404 1200',address:'Belgard Quarry, Dublin 24',dockets:[
-    {order:1,driver:'Sean Brennan',docket:'0847',sitRef:'A1 / A2',date:'2026-08-05',time:'09:12:44',cat:'Muck Away',type:'Clay',weight:'20.0',onHire:false,hours:'—',rate:0,pod:true},
-    {order:2,driver:'Mick Doherty',docket:'0851',sitRef:'A3 / A4',date:'2026-08-06',time:'11:40:03',cat:'Aggregate',type:'6F2 Capping',weight:'19.2',onHire:false,hours:'—',rate:0,pod:false},
+    {order:1,driver:'Sean Brennan',docket:'0847',sitRef:'A1 / A2',route:'Belgard → N4 Collooney',date:'2026-08-05',time:'09:12:44',cat:'Muck Away',type:'Clay',weight:'20.0',onHire:false,hours:'—'},
+    {order:2,driver:'Mick Doherty',docket:'0851',sitRef:'A3 / A4',route:'Belgard → Collooney',date:'2026-08-06',time:'11:40:03',cat:'Aggregate',type:'6F2 Capping',weight:'19.2',onHire:false,hours:'—'},
+    {order:3,driver:'J. Brennan',docket:'0853',sitRef:'A3 / A4',route:'Belgard → Collooney',date:'2026-08-08',time:'14:05:20',cat:'Aggregate',type:'6F2 Capping',weight:'18.8',onHire:false,hours:'—'},
   ]},
   {cust:'Ward Bros Construction',email:'invoices@wardbros.ie',phone:'071 918 4410',address:'Collooney, Co. Sligo',dockets:[
-    {order:1,driver:'T. Rooney',docket:'1123',sitRef:'S1 / S2',date:'2026-08-07',time:'08:20:11',cat:'Plant Hire',type:'JCB 3CX',weight:'—',onHire:true,hours:'8h 0m',rate:0,pod:true},
+    {order:1,driver:'T. Rooney',docket:'1123',sitRef:'S1 / S2',route:'Depot → Collooney',date:'2026-08-07',time:'08:20:11',cat:'Plant Hire',type:'JCB 3CX',weight:'—',onHire:true,hours:'8h 0m'},
   ]},
   {cust:'Kilcawley Building',email:'ap@kilcawley.ie',phone:'071 916 0100',address:'Carraroe, Co. Sligo',dockets:[
-    {order:1,driver:'C. Kilfeather',docket:'2091',sitRef:'K1 / K2',date:'2026-08-08',time:'13:05:52',cat:'Aggregate',type:'Type 1 (804)',weight:'21.4',onHire:false,hours:'—',rate:0,pod:true},
-    {order:2,driver:'P. Gallagher',docket:'2094',sitRef:'K3 / K4',date:'2026-08-11',time:'10:33:20',cat:'Muck Away',type:'Topsoil',weight:'18.9',onHire:false,hours:'—',rate:0,pod:true},
+    {order:1,driver:'C. Kilfeather',docket:'2091',sitRef:'K1 / K2',route:'Depot → Carraroe',date:'2026-08-08',time:'13:05:52',cat:'Aggregate',type:'Type 1 (804)',weight:'21.4',onHire:false,hours:'—'},
+    {order:2,driver:'P. Gallagher',docket:'2094',sitRef:'K3 / K4',route:'Depot → Carraroe',date:'2026-08-11',time:'10:33:20',cat:'Muck Away',type:'Topsoil',weight:'18.9',onHire:false,hours:'—'},
   ]},
 ];
+/* customer set-rate card: key = customer|category|type|route -> rate */
+const RATECARD={};
+function rkey(cust,cat,type,route){return [cust,cat,type,route].join('|');}
+[
+  ['Harringtons','Aggregate','804 Stone','Depot → Ballymote',185],
+  ['Roadstone Ltd','Muck Away','Clay','Belgard → N4 Collooney',180],
+  ['Roadstone Ltd','Aggregate','6F2 Capping','Belgard → Collooney',210],
+  ['Ward Bros Construction','Plant Hire','JCB 3CX','Depot → Collooney',320],
+  ['Kilcawley Building','Aggregate','Type 1 (804)','Depot → Carraroe',195],
+  ['Kilcawley Building','Muck Away','Topsoil','Depot → Carraroe',175],
+].forEach(a=>RATECARD[rkey(a[0],a[1],a[2],a[3])]=a[4]);
+INV.forEach(c=>c.dockets.forEach(d=>{ d.card=RATECARD[rkey(c.cust,d.cat,d.type,d.route)]||0; d.rate=d.card; d.state='suggested'; d.pod=true; }));
 let sumRange={from:'',to:''}, curCust=null;
 function money(n){return '€'+(+n||0).toFixed(2);}
 function inRange(d){return (!sumRange.from||d>=sumRange.from)&&(!sumRange.to||d<=sumRange.to);}
@@ -1492,18 +1524,39 @@ function refreshInvTotals(){
   document.getElementById('invVat').textContent=money(t.vat);
   document.getElementById('invTot').textContent=money(t.tot);
 }
+function statePill(s){
+  const m={suggested:['sug','Suggested'],confirmed:['conf','Confirmed'],changed:['chg','Changed'],auto:['auto','Auto-updated']};
+  const p=m[s]||m.suggested; return `<span class="rstat ${p[0]}">${p[1]}</span>`;
+}
+function propagateMatches(idx,d,R){
+  const c=INV[idx], key=rkey(c.cust,d.cat,d.type,d.route); RATECARD[key]=R; let n=0;
+  c.dockets.forEach(o=>{ if(o!==d && rkey(c.cust,o.cat,o.type,o.route)===key){ o.rate=R; o.card=R; o.state='auto'; n++; } });
+  return n;
+}
+function commitRate(idx,d){
+  const R=+d.rate||0;
+  if(R!==d.card){ const n=propagateMatches(idx,d,R); d.card=R; d.state='changed'; return n; }
+  d.state='confirmed'; return 0;
+}
+function allActioned(idx){return custDockets(idx).every(d=>d.state!=='suggested');}
+function getSelected(){return [...document.querySelectorAll('#invRows [data-sel]:checked')].map(cb=>INV[curCust].dockets[+cb.dataset.sel]);}
+function updateBulk(){
+  const n=document.querySelectorAll('#invRows [data-sel]:checked').length;
+  document.getElementById('bulkCount').textContent=n;
+  document.getElementById('bulkBar').style.display=n?'flex':'none';
+}
 function renderInvDetail(){
   const c=INV[curCust], rows=custDockets(curCust);
   document.getElementById('invRows').innerHTML=rows.length?rows.map(d=>{
-    const ridx=c.dockets.indexOf(d), total=(+d.rate||0);
-    const rateCell=(d.rate||d._edit)?`<input type="number" class="rateinp" data-rate="${ridx}" value="${d.rate||''}" placeholder="0.00">`:`<button class="rate-add" data-rate="${ridx}">Add</button>`;
+    const ridx=c.dockets.indexOf(d);
+    const confirmBtn=d.state==='suggested'?`<button class="confirmbtn" data-confirm="${ridx}">Confirm</button>`:'';
     return `<tr>
-      <td><input type="checkbox"></td>
+      <td><input type="checkbox" data-sel="${ridx}"></td>
       <td>${d.order}</td>
       <td>${esc(c.cust)}</td>
       <td>${esc(d.driver)}</td>
       <td class="pn">${esc(d.docket)}</td>
-      <td class="pn">${esc(d.sitRef)}</td>
+      <td class="pn">${esc(d.sitRef)}<div class="cell-sub">${esc(d.route)}</div></td>
       <td class="pn">${esc(d.date)}</td>
       <td class="pn">${esc(d.time)}</td>
       <td>${esc(d.cat)}</td>
@@ -1511,12 +1564,15 @@ function renderInvDetail(){
       <td>${esc(d.weight)}</td>
       <td><span class="onhirecell ${d.onHire?'yes':'no'}" title="${d.onHire?'On hire':'Not on hire'}"></span></td>
       <td>${esc(d.hours)}</td>
-      <td>${rateCell}</td>
-      <td class="pn" data-tot="${ridx}">${money(total)}</td>
+      <td><input type="number" class="rateinp${d.state!=='suggested'?' set':''}" data-rate="${ridx}" value="${d.rate||''}" placeholder="${d.card||'set rate'}" title="Customer set rate: ${d.card?money(d.card):'none on file'}"></td>
+      <td><div style="display:flex;align-items:center;gap:6px">${statePill(d.state)}${confirmBtn}</div></td>
+      <td class="pn" data-tot="${ridx}">${money(d.rate)}</td>
       <td><span class="podlink" data-pod title="Proof of delivery">POD</span></td>
     </tr>`;
-  }).join(''):`<tr><td colspan="16" class="empty">No dockets for this customer in the date range.</td></tr>`;
+  }).join(''):`<tr><td colspan="17" class="empty">No dockets for this customer in the date range.</td></tr>`;
   refreshInvTotals();
+  const sa=document.getElementById('selAll'); if(sa) sa.checked=false;
+  updateBulk();
 }
 function renderInvoiceDoc(idx){
   const c=INV[idx], rows=custDockets(idx), t=(function(){const s=rows.reduce((a,d)=>a+(+d.rate||0),0);return{sub:s,vat:s*0.23,tot:s*1.23};})();
@@ -1547,8 +1603,8 @@ function sumCsvExport(){
   let rows, name;
   if(document.getElementById('sumDetail').style.display!=='none' && curCust!=null){
     name='invoice-'+INV[curCust].cust.replace(/\s+/g,'-').toLowerCase()+'.csv';
-    rows=[['Order','Customer','Driver','Docket','Sit Ref','Date','Created','Category','Type','Weight','On hire','Hours','Rate','Total']];
-    custDockets(curCust).forEach(d=>rows.push([d.order,INV[curCust].cust,d.driver,d.docket,d.sitRef,d.date,d.time,d.cat,d.type,d.weight,d.onHire?'Yes':'No',d.hours,d.rate,d.rate]));
+    rows=[['Order','Customer','Driver','Docket','Sit Ref','Route','Date','Created','Category','Type','Weight','On hire','Hours','Rate','Rate status','Total']];
+    custDockets(curCust).forEach(d=>rows.push([d.order,INV[curCust].cust,d.driver,d.docket,d.sitRef,d.route,d.date,d.time,d.cat,d.type,d.weight,d.onHire?'Yes':'No',d.hours,d.rate,d.state,d.rate]));
   }else{
     name='invoice-summary.csv';
     rows=[['Sr','Customer','Email','Phone','Address','Dockets']];
@@ -1573,19 +1629,39 @@ document.getElementById('invSearch').addEventListener('click',()=>{
 });
 document.getElementById('invBack').addEventListener('click',()=>{renderSumList();showSum('list');});
 document.getElementById('sumPdf1').addEventListener('click',()=>{const c=custsInRange();if(c.length)renderInvoiceDoc(INV.indexOf(c[0]));else toast('No invoices to generate');});
-document.getElementById('sumPdf2').addEventListener('click',()=>{if(curCust!=null)renderInvoiceDoc(curCust);});
+document.getElementById('sumPdf2').addEventListener('click',()=>{if(curCust==null)return;if(!allActioned(curCust)){toast('Confirm or change all rates before exporting');return;}renderInvoiceDoc(curCust);});
 document.getElementById('sumCsv1').addEventListener('click',sumCsvExport);
-document.getElementById('sumCsv2').addEventListener('click',sumCsvExport);
+document.getElementById('sumCsv2').addEventListener('click',()=>{if(curCust!=null&&!allActioned(curCust)){toast('Confirm or change all rates before exporting');return;}sumCsvExport();});
 document.getElementById('invDownload').addEventListener('click',()=>toast('Downloading invoice PDF…'));
-document.getElementById('invRows').addEventListener('input',e=>{
+const invRowsEl=document.getElementById('invRows');
+invRowsEl.addEventListener('input',e=>{
   const inp=e.target.closest('.rateinp'); if(!inp)return;
-  const ridx=+inp.dataset.rate; INV[curCust].dockets[ridx].rate=+inp.value||0;
-  const cell=document.querySelector(`[data-tot="${ridx}"]`); if(cell)cell.textContent=money(+inp.value||0);
+  const ridx=+inp.dataset.rate, d=INV[curCust].dockets[ridx]; d.rate=+inp.value||0;
+  const cell=document.querySelector(`[data-tot="${ridx}"]`); if(cell)cell.textContent=money(d.rate);
   refreshInvTotals();
+});
+invRowsEl.addEventListener('change',e=>{
+  const inp=e.target.closest('.rateinp');
+  if(inp){ const d=INV[curCust].dockets[+inp.dataset.rate]; const n=commitRate(curCust,d); renderInvDetail();
+    toast(n?('Rate updated — synced to '+n+' matching load'+(n>1?'s':'')+' & the rate card'):'Rate confirmed'); return; }
+  const sel=e.target.closest('[data-sel]'); if(sel){ updateBulk(); return; }
+});
+document.getElementById('selAll').addEventListener('change',e=>{
+  document.querySelectorAll('#invRows [data-sel]').forEach(cb=>cb.checked=e.target.checked); updateBulk();
+});
+document.getElementById('bulkConfirm').addEventListener('click',()=>{
+  const sel=getSelected(); if(!sel.length){toast('Select loads first');return;}
+  sel.forEach(d=>{ if(d.state==='suggested') d.state='confirmed'; }); renderInvDetail(); toast(sel.length+' load(s) confirmed');
+});
+document.getElementById('bulkApply').addEventListener('click',()=>{
+  const R=+document.getElementById('bulkRate').value; if(!R){toast('Enter a rate to apply');return;}
+  const sel=getSelected(); if(!sel.length){toast('Select loads first');return;}
+  sel.forEach(d=>{ d.rate=R; commitRate(curCust,d); }); document.getElementById('bulkRate').value=''; renderInvDetail();
+  toast('Rate '+money(R)+' assigned to '+sel.length+' load(s)');
 });
 document.addEventListener('click',e=>{
   const vi=e.target.closest('[data-inv]'); if(vi){openInvDetail(+vi.dataset.inv);return;}
-  const ra=e.target.closest('button.rate-add'); if(ra){INV[curCust].dockets[+ra.dataset.rate]._edit=true;renderInvDetail();const inp=document.querySelector(`.rateinp[data-rate="${ra.dataset.rate}"]`);if(inp)inp.focus();return;}
+  const cf=e.target.closest('[data-confirm]'); if(cf){ INV[curCust].dockets[+cf.dataset.confirm].state='confirmed'; renderInvDetail(); toast('Load confirmed'); return; }
   const pod=e.target.closest('[data-pod]'); if(pod){toast('Opening proof of delivery…');return;}
 });
 renderSummary();
