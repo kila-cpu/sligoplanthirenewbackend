@@ -385,6 +385,8 @@
   .abtn.update{background:#fff;border-color:var(--line-2);color:#41474d}
   .abtn.update:hover{background:#f5f6f7}
   .rate-set-box{border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;font-weight:700;background:#f8f9fa}
+  .control[readonly]{background:#f8f9fa;color:var(--ink)}
+  .dockettotal{display:flex;align-items:center;justify-content:space-between;background:var(--green-bg);border:1px solid #bfe6cd;border-radius:8px;padding:13px 15px;font-weight:800;color:var(--green);font-size:16px;margin-top:4px}
 
   /* toast */
   .toast{position:fixed;right:26px;bottom:26px;background:#20242a;color:#fff;padding:14px 20px;border-radius:10px;font-size:14.5px;font-weight:600;z-index:80;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px);transition:.28s;box-shadow:0 14px 34px -10px rgba(0,0,0,.5)}
@@ -679,7 +681,7 @@
             <div class="bulkbar" id="bulkBar" style="display:none">
               <span><b id="bulkCount">0</b> load(s) selected</span>
               <button class="btn green" id="bulkConfirm" style="padding:8px 14px">Confirm selected</button>
-              <span class="ratewrap">Set rate &euro; <input type="number" class="rateinp" id="bulkRate" placeholder="0.00"> <button class="btn red" id="bulkApply" style="padding:8px 14px">Apply to group</button></span>
+              <span class="ratewrap">Set rate &euro;/t <input type="number" step="0.01" class="rateinp" id="bulkRate" placeholder="0.00"> <button class="btn red" id="bulkApply" style="padding:8px 14px">Apply to group</button></span>
             </div>
             <div class="card"><div class="tbl-wrap"><table class="ptbl">
               <thead><tr><th><input type="checkbox" id="selAll"></th><th>Order</th><th>Customer</th><th>Driver</th><th>Docket No.</th><th>Sit Ref 1/2</th><th>Date</th><th>Created</th><th>Category</th><th>Type</th><th>Weight (t)</th><th>On hire</th><th>On Hire (hrs)</th><th>Rate &euro;</th><th>Status</th><th>Total &euro;</th><th>Actions</th></tr></thead>
@@ -859,21 +861,19 @@
       <div class="m-foot"><button class="btn grey" data-close>Close</button><button class="btn green" id="invDownload">Download PDF</button></div>
     </div>
 
-    <!-- Confirm / update rate -->
-    <div class="modal" id="mRate" style="display:none;max-width:520px">
-      <div class="m-head"><h3><span class="hw" style="color:var(--red)">%REPORT%</span><span id="rateTitle">Confirm rate</span></h3><button class="x" data-close>&times;</button></div>
+    <!-- Update rate -->
+    <div class="modal" id="mRate" style="display:none;max-width:560px">
+      <div class="m-head"><h3 id="rateTitle">Update rate</h3><button class="x" data-close>&times;</button></div>
       <div class="m-body">
-        <div class="detail-grid" style="margin-bottom:16px">
-          <div><div class="d-k">Customer</div><div class="d-v" id="rateCust"></div></div>
-          <div><div class="d-k">Docket</div><div class="d-v" id="rateDocket"></div></div>
-          <div><div class="d-k">Material</div><div class="d-v" id="rateMat"></div></div>
-          <div><div class="d-k">Route</div><div class="d-v" id="rateRoute"></div></div>
+        <div class="frow">
+          <div class="field"><label>Customer</label><input class="control" id="rateCust" readonly></div>
+          <div class="field"><label>Weight (T)</label><input class="control" id="rateWeight" readonly></div>
         </div>
-        <div class="field"><label>Customer set rate</label><div class="rate-set-box" id="rateCard">—</div></div>
-        <div class="field"><label>Rate &euro; <span class="opt">per load</span></label><input type="number" class="control" id="rateInput" placeholder="0.00"></div>
-        <div style="font-size:12.5px;color:var(--sub);line-height:1.5">Changing this updates the customer&rsquo;s rate card and any matching loads (same material &amp; route) across the app.</div>
+        <div class="field"><label>Rate per tonne (&euro;)</label><input type="number" step="0.01" class="control" id="rateInput" placeholder="e.g. 14.50"></div>
+        <div class="dockettotal"><span>Docket total</span><span id="rateTotal">&euro;0.00</span></div>
+        <div style="font-size:12px;color:var(--sub);margin-top:12px;line-height:1.5">Saving updates the customer&rsquo;s rate card and any matching loads (same material &amp; route) across the app.</div>
       </div>
-      <div class="m-foot"><button class="btn grey" data-close>Cancel</button><button class="btn red" id="rateSave">Confirm rate</button></div>
+      <div class="m-foot"><button class="btn grey" data-close>Cancel</button><button class="btn green" id="rateSave">Save rate &rarr; move to customer</button></div>
     </div>
 
     <!-- View docket -->
@@ -1492,7 +1492,7 @@ let INV=[
     {order:3,driver:'J. Brennan',docket:'0853',sitRef:'A3 / A4',route:'Belgard → Collooney',date:'2026-08-08',time:'14:05:20',cat:'Aggregate',type:'6F2 Capping',weight:'18.8',onHire:false,hours:'—'},
   ]},
   {cust:'Ward Bros Construction',email:'invoices@wardbros.ie',phone:'071 918 4410',address:'Collooney, Co. Sligo',dockets:[
-    {order:1,driver:'T. Rooney',docket:'1123',sitRef:'S1 / S2',route:'Depot → Collooney',date:'2026-08-07',time:'08:20:11',cat:'Plant Hire',type:'JCB 3CX',weight:'—',onHire:true,hours:'8h 0m'},
+    {order:1,driver:'T. Rooney',docket:'1123',sitRef:'S1 / S2',route:'Depot → Collooney',date:'2026-08-07',time:'08:20:11',cat:'Aggregate',type:'Type 1 (804)',weight:'22.6',onHire:false,hours:'—'},
   ]},
   {cust:'Kilcawley Building',email:'ap@kilcawley.ie',phone:'071 916 0100',address:'Carraroe, Co. Sligo',dockets:[
     {order:1,driver:'C. Kilfeather',docket:'2091',sitRef:'K1 / K2',route:'Depot → Carraroe',date:'2026-08-08',time:'13:05:52',cat:'Aggregate',type:'Type 1 (804)',weight:'21.4',onHire:false,hours:'—'},
@@ -1503,16 +1503,18 @@ let INV=[
 const RATECARD={};
 function rkey(cust,cat,type,route){return [cust,cat,type,route].join('|');}
 [
-  ['Harringtons','Aggregate','804 Stone','Depot → Ballymote',185],
-  ['Roadstone Ltd','Muck Away','Clay','Belgard → N4 Collooney',180],
-  ['Roadstone Ltd','Aggregate','6F2 Capping','Belgard → Collooney',210],
-  ['Ward Bros Construction','Plant Hire','JCB 3CX','Depot → Collooney',320],
-  ['Kilcawley Building','Aggregate','Type 1 (804)','Depot → Carraroe',195],
-  ['Kilcawley Building','Muck Away','Topsoil','Depot → Carraroe',175],
+  ['Harringtons','Aggregate','804 Stone','Depot → Ballymote',14.50],
+  ['Roadstone Ltd','Muck Away','Clay','Belgard → N4 Collooney',11.80],
+  ['Roadstone Ltd','Aggregate','6F2 Capping','Belgard → Collooney',13.80],
+  ['Ward Bros Construction','Aggregate','Type 1 (804)','Depot → Collooney',12.90],
+  ['Kilcawley Building','Aggregate','Type 1 (804)','Depot → Carraroe',13.20],
+  ['Kilcawley Building','Muck Away','Topsoil','Depot → Carraroe',10.50],
 ].forEach(a=>RATECARD[rkey(a[0],a[1],a[2],a[3])]=a[4]);
 INV.forEach(c=>c.dockets.forEach(d=>{ d.card=RATECARD[rkey(c.cust,d.cat,d.type,d.route)]||0; d.rate=d.card; d.state='suggested'; d.pod=true; }));
 let sumRange={from:'',to:''}, curCust=null;
 function money(n){return '€'+(+n||0).toFixed(2);}
+function wnum(d){return parseFloat(d.weight)||0;}
+function docketTotal(d){return (+d.rate||0)*wnum(d);}
 function inRange(d){return (!sumRange.from||d>=sumRange.from)&&(!sumRange.to||d<=sumRange.to);}
 function custDockets(idx){return INV[idx].dockets.filter(d=>inRange(d.date));}
 function custsInRange(){return INV.filter(c=>c.dockets.some(d=>inRange(d.date)));}
@@ -1552,7 +1554,7 @@ function openInvDetail(idx){
 }
 function invTotals(){
   const rows=custDockets(curCust);
-  const sub=rows.reduce((a,d)=>a+(+d.rate||0),0), vat=sub*0.23, tot=sub+vat;
+  const sub=rows.reduce((a,d)=>a+docketTotal(d),0), vat=sub*0.23, tot=sub+vat;
   return {sub,vat,tot};
 }
 function refreshInvTotals(){
@@ -1601,12 +1603,13 @@ function renderInvDetail(){
       <td>${esc(d.weight)}</td>
       <td><span class="onhirecell ${d.onHire?'yes':'no'}" title="${d.onHire?'On hire':'Not on hire'}"></span></td>
       <td>${esc(d.hours)}</td>
-      <td class="pn"><span class="ratedisp${hasRate?'':' none'}">${hasRate?money(d.rate):'Not set'}</span></td>
+      <td class="pn"><span class="ratedisp${hasRate?'':' none'}">${hasRate?money(d.rate)+'/t':'Not set'}</span></td>
       <td>${statePill(d.state)}</td>
-      <td class="pn">${money(d.rate)}</td>
+      <td class="pn">${money(docketTotal(d))}</td>
       <td><div class="actbtns">
         <button class="abtn view" data-viewdocket="${ridx}">${I.EYE} View Docket</button>
-        ${d.state==='suggested'?`<button class="abtn confirm" data-rateopen="${ridx}">${I.PLUS_S} Confirm Rate</button>`:`<button class="abtn update" data-rateopen="${ridx}">${I.PENCIL} Update Rate</button>`}
+        <button class="abtn confirm" data-rateconfirm="${ridx}">${I.CHECK} Confirm Rate</button>
+        <button class="abtn update" data-rateopen="${ridx}">${I.PENCIL} Update Rate</button>
       </div></td>
     </tr>`;
   }).join(''):`<tr><td colspan="17" class="empty">No dockets for this customer in the date range.</td></tr>`;
@@ -1615,7 +1618,7 @@ function renderInvDetail(){
   updateBulk();
 }
 function renderInvoiceDoc(idx){
-  const c=INV[idx], rows=custDockets(idx), t=(function(){const s=rows.reduce((a,d)=>a+(+d.rate||0),0);return{sub:s,vat:s*0.23,tot:s*1.23};})();
+  const c=INV[idx], rows=custDockets(idx), t=(function(){const s=rows.reduce((a,d)=>a+docketTotal(d),0);return{sub:s,vat:s*0.23,tot:s*1.23};})();
   document.getElementById('invDocTitle').textContent='Invoice — '+c.cust;
   document.getElementById('invdoc').innerHTML=`
     <div class="gd-top">
@@ -1629,7 +1632,7 @@ function renderInvoiceDoc(idx){
     </div>
     <table class="swl" style="margin-top:10px">
       <thead><tr><th style="text-align:left">Docket</th><th style="text-align:left">Date</th><th style="text-align:left">Description</th><th>Wt (t)</th><th>Hrs</th><th style="text-align:right">Rate</th><th style="text-align:right">Total</th></tr></thead>
-      <tbody>${rows.map(d=>`<tr><td>${esc(d.docket)}</td><td>${esc(d.date)}</td><td style="text-align:left">${esc(d.cat)}${d.type&&d.type!=='—'?' &middot; '+esc(d.type):''}</td><td style="text-align:center">${esc(d.weight)}</td><td style="text-align:center">${esc(d.hours)}</td><td style="text-align:right">${money(d.rate)}</td><td style="text-align:right">${money(d.rate)}</td></tr>`).join('')}</tbody>
+      <tbody>${rows.map(d=>`<tr><td>${esc(d.docket)}</td><td>${esc(d.date)}</td><td style="text-align:left">${esc(d.cat)}${d.type&&d.type!=='—'?' &middot; '+esc(d.type):''}</td><td style="text-align:center">${esc(d.weight)}</td><td style="text-align:center">${esc(d.hours)}</td><td style="text-align:right">${money(d.rate)}/t</td><td style="text-align:right">${money(docketTotal(d))}</td></tr>`).join('')}</tbody>
     </table>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-top:10px;font-size:13px">
       <div style="display:flex;gap:34px"><span>Subtotal</span><b>${money(t.sub)}</b></div>
@@ -1643,8 +1646,8 @@ function sumCsvExport(){
   let rows, name;
   if(document.getElementById('sumDetail').style.display!=='none' && curCust!=null){
     name='invoice-'+INV[curCust].cust.replace(/\s+/g,'-').toLowerCase()+'.csv';
-    rows=[['Order','Customer','Driver','Docket','Sit Ref','Route','Date','Created','Category','Type','Weight','On hire','Hours','Rate','Rate status','Total']];
-    custDockets(curCust).forEach(d=>rows.push([d.order,INV[curCust].cust,d.driver,d.docket,d.sitRef,d.route,d.date,d.time,d.cat,d.type,d.weight,d.onHire?'Yes':'No',d.hours,d.rate,d.state,d.rate]));
+    rows=[['Order','Customer','Driver','Docket','Sit Ref','Route','Date','Created','Category','Type','Weight','On hire','Hours','Rate/t','Rate status','Total']];
+    custDockets(curCust).forEach(d=>rows.push([d.order,INV[curCust].cust,d.driver,d.docket,d.sitRef,d.route,d.date,d.time,d.cat,d.type,d.weight,d.onHire?'Yes':'No',d.hours,d.rate,d.state,docketTotal(d).toFixed(2)]));
   }else{
     name='invoice-summary.csv';
     rows=[['Sr','Customer','Email','Phone','Address','Dockets']];
@@ -1676,15 +1679,15 @@ document.getElementById('invDownload').addEventListener('click',()=>toast('Downl
 let curRateIdx=null;
 function openRateModal(ridx){
   curRateIdx=ridx; const c=INV[curCust], d=c.dockets[ridx];
-  document.getElementById('rateTitle').textContent=d.state==='suggested'?'Confirm rate':'Update rate';
-  document.getElementById('rateCust').textContent=c.cust;
-  document.getElementById('rateDocket').textContent=d.docket;
-  document.getElementById('rateMat').textContent=d.cat+' · '+d.type;
-  document.getElementById('rateRoute').textContent=d.route;
-  document.getElementById('rateCard').textContent=d.card?money(d.card):'None on file';
+  document.getElementById('rateCust').value=c.cust;
+  document.getElementById('rateWeight').value=(d.weight&&d.weight!=='—')?(d.weight+' t'):'—';
   document.getElementById('rateInput').value=d.rate||'';
-  document.getElementById('rateSave').textContent=d.state==='suggested'?'Confirm rate':'Save rate';
+  updateRateTotal();
   openModal('mRate'); setTimeout(()=>document.getElementById('rateInput').focus(),60);
+}
+function updateRateTotal(){
+  if(curRateIdx==null)return; const d=INV[curCust].dockets[curRateIdx];
+  document.getElementById('rateTotal').textContent=money((+document.getElementById('rateInput').value||0)*wnum(d));
 }
 function openDocket(ridx){
   const c=INV[curCust], d=c.dockets[ridx];
@@ -1711,16 +1714,18 @@ document.getElementById('bulkApply').addEventListener('click',()=>{
   sel.forEach(d=>{ d.rate=R; commitRate(curCust,d); }); document.getElementById('bulkRate').value=''; renderInvDetail();
   toast('Rate '+money(R)+' assigned to '+sel.length+' load(s)');
 });
+document.getElementById('rateInput').addEventListener('input',updateRateTotal);
 document.getElementById('rateSave').addEventListener('click',()=>{
   if(curRateIdx==null)return; const d=INV[curCust].dockets[curRateIdx];
   d.rate=+document.getElementById('rateInput').value||0; const n=commitRate(curCust,d);
   closeModal(); renderInvDetail();
-  toast(n?('Rate updated — synced to '+n+' matching load'+(n>1?'s':'')):'Rate confirmed');
+  toast(n?('Rate saved — synced to '+n+' matching load'+(n>1?'s':'')):'Rate saved & moved to customer');
 });
 document.getElementById('docPod').addEventListener('click',()=>toast('Opening proof of delivery…'));
 document.addEventListener('click',e=>{
   const vi=e.target.closest('[data-inv]'); if(vi){openInvDetail(+vi.dataset.inv);return;}
   const vd=e.target.closest('[data-viewdocket]'); if(vd){openDocket(+vd.dataset.viewdocket);return;}
+  const rc=e.target.closest('[data-rateconfirm]'); if(rc){ INV[curCust].dockets[+rc.dataset.rateconfirm].state='confirmed'; renderInvDetail(); toast('Rate confirmed'); return; }
   const ro=e.target.closest('[data-rateopen]'); if(ro){openRateModal(+ro.dataset.rateopen);return;}
 });
 renderSummary();
