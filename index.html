@@ -398,6 +398,27 @@
   #sumDetail .ratedisp,#sumDetail .rstat{font-size:11.5px}
   #sumDetail .onhirecell{width:24px;height:16px}
 
+  /* ---------- registrations ---------- */
+  .reg-legend{display:flex;gap:18px;align-items:center;flex-wrap:wrap;font-size:13px;font-weight:600;color:var(--sub);margin:0 2px 14px}
+  .reg-legend .lg{display:inline-flex;align-items:center;gap:7px}
+  .reg-legend .dot{width:10px;height:10px;border-radius:50%}
+  .exp-over{background:#fdeae9!important;color:var(--red-dark)!important;font-weight:700}
+  .exp-soon{background:#fbf0d9!important;color:#a9740b!important;font-weight:700}
+  .rstatus{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap}
+  .rstatus .bd{width:7px;height:7px;border-radius:50%;background:currentColor}
+  .rstatus.active{background:var(--green-bg);color:var(--green)}
+  .rstatus.hire{background:#fbf0d9;color:#a9740b}
+  .rstatus.sold{background:#fdeae9;color:var(--red-dark)}
+  .regbtn{background:var(--red);color:#fff;border:0;border-radius:7px;padding:6px 12px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+  .regbtn:hover{background:var(--red-dark)}
+  .countbadge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;border-radius:999px;background:#fff;border:1px solid var(--line-2);color:var(--sub);font-size:11px;font-weight:800;margin-left:6px}
+  .regacts{display:flex;gap:6px}
+  .regicon{width:32px;height:32px;border-radius:7px;border:1px solid var(--line-2);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.12s}
+  .regicon.edit{color:var(--green)}.regicon.edit:hover{background:var(--green-bg);border-color:var(--green)}
+  .regicon.del{color:var(--red)}.regicon.del:hover{background:#fdeae9;border-color:var(--red)}
+  .regicon svg{width:15px;height:15px}
+  .regchk{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--ink-soft);padding-bottom:10px;cursor:pointer}
+
   /* toast */
   .toast{position:fixed;right:26px;bottom:26px;background:#20242a;color:#fff;padding:14px 20px;border-radius:10px;font-size:14.5px;font-weight:600;z-index:80;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px);transition:.28s;box-shadow:0 14px 34px -10px rgba(0,0,0,.5)}
   .toast .d{width:9px;height:9px;border-radius:50%;background:#4ade80}
@@ -441,7 +462,7 @@
         <div class="group open">
           <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Truck Management</span><span class="car">%CARET%</span></button>
           <div class="gbody">
-            <a class="sub" data-stub="Registrations"><span class="cr">%CHEVR%</span>Registrations</a>
+            <a class="sub" data-nav="registrations"><span class="cr">%CHEVR%</span>Registrations</a>
             <a class="sub" data-stub="Morning Checklist"><span class="cr">%CHEVR%</span>Morning Checklist</a>
             <a class="sub" data-stub="Vehicle Checks"><span class="cr">%CHEVR%</span>Vehicle Checks</a>
             <a class="sub" data-stub="Summary"><span class="cr">%CHEVR%</span>Summary</a>
@@ -704,6 +725,37 @@
             </div>
           </div>
         </section>
+
+        <!-- ===== Registrations page ===== -->
+        <section class="page" data-page="registrations">
+          <div class="pagehead">
+            <div class="title">
+              <span class="wr" style="color:var(--red)">%TRUCK%</span>
+              <div><h1>Registrations</h1><div class="subttl">Fleet registrations, service &amp; expiry tracking</div></div>
+            </div>
+            <span class="spacer"></span>
+            <button class="btn ghost" id="regImport">Import</button>
+            <button class="btn-add" id="regAdd">+ Add Vehicle</button>
+          </div>
+          <div class="reg-legend">
+            <span class="lg"><span class="dot" style="background:var(--green)"></span>Active</span>
+            <span class="lg"><span class="dot" style="background:#e0a416"></span>On Hire</span>
+            <span class="lg"><span class="dot" style="background:var(--red)"></span>Sold</span>
+            <span style="flex:1;min-width:16px"></span>
+            <span>Expiry: <span style="background:#fbf0d9;color:#a9740b;padding:2px 8px;border-radius:6px;font-weight:700">due soon</span> <span style="background:#fdeae9;color:var(--red-dark);padding:2px 8px;border-radius:6px;font-weight:700">overdue</span></span>
+          </div>
+          <div class="repbar">
+            <div class="repfield"><label>Status</label><select class="control" id="regStatus" style="width:170px"><option value="">All statuses</option><option>Active</option><option>On Hire</option><option>Sold</option></select></div>
+            <div class="repfield"><label>Vehicle Type</label><select class="control" id="regType" style="width:170px"><option value="">All types</option><option>Van</option><option>Truck</option><option>Car</option><option>Tipper</option></select></div>
+            <label class="regchk"><input type="checkbox" id="regSoon"> Show expiry soon only</label>
+            <div class="search" style="flex:0 1 240px"><input type="text" id="regSearch" placeholder="Search reg, driver, model.."></div>
+            <button class="btn grey" id="regClear">Clear</button>
+          </div>
+          <div class="card"><div class="tbl-wrap"><table class="ptbl">
+            <thead><tr><th>Registration</th><th>Vehicle Type</th><th>Driver</th><th>Model</th><th>Year</th><th>Mileage</th><th>Service Due</th><th>Service Due (Mileage)</th><th>CVRT/NCT Expiry</th><th>Tax Expiry</th><th>Insurance Expiry</th><th>Logbook</th><th>Morning Checklist</th><th>Job Cards</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="regRows"></tbody>
+          </table></div><div class="listfoot" id="regCount">0 vehicles</div></div>
+        </section>
       </div>
     </div>
   </div>
@@ -924,6 +976,7 @@ const I={
   DOWNLOAD:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M5 21h14"/></svg>',
   REPORT:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>',
   EYE:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
+  TRUCK:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V6H2v11h2"/><circle cx="6.5" cy="17.5" r="1.7"/><circle cx="16.5" cy="17.5" r="1.7"/><path d="M14 9h4l3 4v4h-2"/></svg>',
 };
 
 const DATA={
@@ -1254,7 +1307,7 @@ function setNav(name){
 }
 document.addEventListener('click',e=>{
   const pg=e.target.closest('[data-nav]');
-  if(pg){const n=pg.dataset.nav; showPage(n); setNav(n); if(n==='parts')renderParts(); if(n==='ga1')renderGa1(); if(n==='defects')renderDefects(); if(n==='summary')renderSummary(); return;}
+  if(pg){const n=pg.dataset.nav; showPage(n); setNav(n); if(n==='parts')renderParts(); if(n==='ga1')renderGa1(); if(n==='defects')renderDefects(); if(n==='summary')renderSummary(); if(n==='registrations')renderReg(); return;}
   const cc=e.target.closest('[data-cat]'); if(cc){openCategory(cc.dataset.cat);return;}
   const pv=e.target.closest('[data-pview]'); if(pv){openPart(pv.dataset.pview);return;}
   const pe=e.target.closest('[data-pedit]'); if(pe){toast('Edit — demo is read-only for existing parts');return;}
@@ -1739,6 +1792,69 @@ document.addEventListener('click',e=>{
   const ro=e.target.closest('[data-rateopen]'); if(ro){openRateModal(+ro.dataset.rateopen);return;}
 });
 renderSummary();
+
+/* ================= REGISTRATIONS MODULE ================= */
+let VEH=[
+  {reg:'231 SO 981',vtype:'Van',driver:'Leo Nolan',model:'Mercedes Sprinter',year:2020,mileage:'N/A',service:'',serviceM:'N/A',cvrt:'2026-08-23',tax:'2027-05-31',ins:'2027-01-14',checks:0,jobs:0,status:'Active'},
+  {reg:'222 SO 509',vtype:'Van',driver:'Conor Hughes',model:'Citroen Berlingo',year:2021,mileage:'N/A',service:'2026-07-01',serviceM:'262000',cvrt:'2027-08-09',tax:'2026-10-31',ins:'2027-01-14',checks:2,jobs:1,status:'Active'},
+  {reg:'181 SO 901',vtype:'Van',driver:'Rauls Rautensilds',model:'Ford Transit',year:2020,mileage:'317758',service:'2026-11-01',serviceM:'336000',cvrt:'2027-01-01',tax:'2027-05-31',ins:'2027-01-14',checks:0,jobs:0,status:'Active'},
+  {reg:'191D918',vtype:'Van',driver:'SPARE',model:'Ford Courier',year:2021,mileage:'N/A',service:'',serviceM:'N/A',cvrt:'2026-10-06',tax:'2027-01-31',ins:'2027-01-14',checks:0,jobs:0,status:'Active'},
+  {reg:'191kk1356',vtype:'Van',driver:'Richard Drennan',model:'Volkswagen Crafter',year:2022,mileage:'N/A',service:'',serviceM:'N/A',cvrt:'2027-03-24',tax:'2027-02-28',ins:'2027-01-14',checks:0,jobs:0,status:'On Hire'},
+  {reg:'132SO757',vtype:'Van',driver:'Lucian',model:'Citroen Dispatch',year:2021,mileage:'N/A',service:'',serviceM:'N/A',cvrt:'2026-12-31',tax:'2027-02-28',ins:'2027-01-14',checks:0,jobs:0,status:'Active'},
+  {reg:'04S01957',vtype:'Tipper',driver:'Kieran Farrell',model:'Scania P410',year:2022,mileage:'N/A',service:'2026-11-01',serviceM:'169000',cvrt:'2027-03-31',tax:'2027-05-31',ins:'2027-01-14',checks:1,jobs:2,status:'Active'},
+  {reg:'172G1892',vtype:'Van',driver:'Jamie Fitzpatrick',model:'Citroen Berlingo',year:2023,mileage:'10',service:'',serviceM:'N/A',cvrt:'2027-04-28',tax:'2027-07-31',ins:'2027-01-14',checks:0,jobs:0,status:'Active'},
+  {reg:'05D37109',vtype:'Van',driver:'Niamh Ryan',model:'Ford Connect',year:2023,mileage:'85272',service:'',serviceM:'N/A',cvrt:'2027-07-31',tax:'2027-06-30',ins:'2027-01-14',checks:0,jobs:0,status:'Active'},
+  {reg:'12SO1998',vtype:'Van',driver:'SPARE',model:'Ford Courier',year:2023,mileage:'N/A',service:'',serviceM:'N/A',cvrt:'2027-06-20',tax:'2026-08-31',ins:'2027-01-14',checks:0,jobs:0,status:'Active'},
+  {reg:'241 SO 112',vtype:'Truck',driver:'T. Rooney',model:'DAF CF',year:2024,mileage:'41200',service:'2026-09-15',serviceM:'50000',cvrt:'2027-02-11',tax:'2027-04-30',ins:'2027-01-14',checks:3,jobs:1,status:'On Hire'},
+  {reg:'162 D 4471',vtype:'Car',driver:'M. Doherty',model:'Toyota Hilux',year:2016,mileage:'198450',service:'',serviceM:'N/A',cvrt:'2026-06-30',tax:'2026-07-31',ins:'2026-09-01',checks:0,jobs:0,status:'Sold'},
+];
+const TODAY_REG=new Date('2026-08-13T00:00:00');
+function fmtDate(iso){ if(!iso) return 'N/A'; return new Date(iso+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
+function expClass(iso){ if(!iso) return ''; const days=(new Date(iso+'T00:00:00')-TODAY_REG)/86400000; return days<0?'exp-over':days<=45?'exp-soon':''; }
+function vehSoon(v){ return [v.cvrt,v.tax,v.ins,v.service].some(x=>{const c=expClass(x);return c==='exp-soon'||c==='exp-over';}); }
+const regRows=document.getElementById('regRows'), regStatus=document.getElementById('regStatus'), regType=document.getElementById('regType'), regSearch=document.getElementById('regSearch'), regSoon=document.getElementById('regSoon'), regCount=document.getElementById('regCount');
+function renderReg(){
+  const st=regStatus.value, tp=regType.value, q=(regSearch.value||'').toLowerCase(), soon=regSoon.checked;
+  const list=VEH.filter(v=>{
+    if(st&&v.status!==st)return false;
+    if(tp&&v.vtype!==tp)return false;
+    if(soon&&!vehSoon(v))return false;
+    return (v.reg+' '+v.driver+' '+v.model+' '+v.vtype).toLowerCase().includes(q);
+  });
+  regRows.innerHTML=list.length?list.map(v=>{
+    const sc={'Active':'active','On Hire':'hire','Sold':'sold'}[v.status];
+    return `<tr>
+      <td class="pn" style="font-weight:700;color:#20242a">${esc(v.reg)}</td>
+      <td>${esc(v.vtype)}</td>
+      <td>${esc(v.driver)}</td>
+      <td>${esc(v.model)}</td>
+      <td>${v.year}</td>
+      <td class="pn">${esc(v.mileage)}</td>
+      <td class="pn ${expClass(v.service)}">${v.service?fmtDate(v.service):'N/A'}</td>
+      <td class="pn">${esc(v.serviceM)}</td>
+      <td class="pn ${expClass(v.cvrt)}">${fmtDate(v.cvrt)}</td>
+      <td class="pn ${expClass(v.tax)}">${fmtDate(v.tax)}</td>
+      <td class="pn ${expClass(v.ins)}">${fmtDate(v.ins)}</td>
+      <td><button class="regbtn" data-regtoast="Logbook · ${esc(v.reg)}">View</button></td>
+      <td><span style="display:inline-flex;align-items:center"><button class="regbtn" data-regtoast="Morning checklist · ${esc(v.reg)}">View</button><span class="countbadge">${v.checks}</span></span></td>
+      <td><span style="display:inline-flex;align-items:center"><button class="regbtn" data-regjobs="${esc(v.reg)}">Job Cards</button><span class="countbadge">${v.jobs}</span></span></td>
+      <td><span class="rstatus ${sc}"><span class="bd"></span>${esc(v.status)}</span></td>
+      <td><div class="regacts"><button class="regicon edit" data-regtoast="Edit ${esc(v.reg)}">${I.PENCIL}</button><button class="regicon del" data-regdel="${VEH.indexOf(v)}">${I.TRASH}</button></div></td>
+    </tr>`;
+  }).join(''):`<tr><td colspan="16" class="empty">No vehicles match your filters.</td></tr>`;
+  regCount.textContent=`Showing ${list.length} of ${VEH.length} vehicles`;
+}
+[regStatus,regType,regSoon].forEach(el=>el.addEventListener('change',renderReg));
+regSearch.addEventListener('input',renderReg);
+document.getElementById('regClear').addEventListener('click',()=>{regStatus.value='';regType.value='';regSearch.value='';regSoon.checked=false;renderReg();});
+document.getElementById('regImport').addEventListener('click',()=>toast('Import registrations — CSV upload'));
+document.getElementById('regAdd').addEventListener('click',()=>toast('Add vehicle — registration form'));
+document.addEventListener('click',e=>{
+  const rt=e.target.closest('[data-regtoast]'); if(rt){toast(rt.dataset.regtoast);return;}
+  const rj=e.target.closest('[data-regjobs]'); if(rj){showPage('jobcards');setNav('jobcards');toast('Job cards for '+rj.dataset.regjobs);return;}
+  const rd=e.target.closest('[data-regdel]'); if(rd){const v=VEH[+rd.dataset.regdel];VEH.splice(+rd.dataset.regdel,1);renderReg();toast(v.reg+' removed');return;}
+});
+renderReg();
 
 /* toast */
 let tt;const toastEl=document.getElementById('toast'),toastMsg=document.getElementById('toastMsg');
