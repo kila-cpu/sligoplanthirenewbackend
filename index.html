@@ -373,6 +373,18 @@
   .bulkbar b{color:var(--ink)}
   .ratewrap{display:flex;align-items:center;gap:8px}
   .rateinp.set{border-color:var(--red)}
+  .ratedisp{font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .ratedisp.none{color:var(--sub);font-weight:600}
+  .actbtns{display:flex;gap:8px;white-space:nowrap}
+  .abtn{display:inline-flex;align-items:center;gap:6px;border-radius:8px;padding:8px 13px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;border:1px solid;white-space:nowrap;transition:.12s}
+  .abtn svg{width:14px;height:14px}
+  .abtn.view{background:#fff;border-color:var(--line-2);color:#41474d}
+  .abtn.view:hover{background:#f5f6f7}
+  .abtn.confirm{background:#3b46d6;border-color:#3b46d6;color:#fff}
+  .abtn.confirm:hover{background:#2f39bd}
+  .abtn.update{background:#fff;border-color:var(--line-2);color:#41474d}
+  .abtn.update:hover{background:#f5f6f7}
+  .rate-set-box{border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;font-weight:700;background:#f8f9fa}
 
   /* toast */
   .toast{position:fixed;right:26px;bottom:26px;background:#20242a;color:#fff;padding:14px 20px;border-radius:10px;font-size:14.5px;font-weight:600;z-index:80;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px);transition:.28s;box-shadow:0 14px 34px -10px rgba(0,0,0,.5)}
@@ -670,7 +682,7 @@
               <span class="ratewrap">Set rate &euro; <input type="number" class="rateinp" id="bulkRate" placeholder="0.00"> <button class="btn red" id="bulkApply" style="padding:8px 14px">Apply to group</button></span>
             </div>
             <div class="card"><div class="tbl-wrap"><table class="ptbl">
-              <thead><tr><th><input type="checkbox" id="selAll"></th><th>Order</th><th>Customer</th><th>Driver</th><th>Docket No.</th><th>Sit Ref 1/2</th><th>Date</th><th>Created</th><th>Category</th><th>Type</th><th>Weight (t)</th><th>On hire</th><th>On Hire (hrs)</th><th>Rate &euro;</th><th>Status</th><th>Total &euro;</th><th>Action</th></tr></thead>
+              <thead><tr><th><input type="checkbox" id="selAll"></th><th>Order</th><th>Customer</th><th>Driver</th><th>Docket No.</th><th>Sit Ref 1/2</th><th>Date</th><th>Created</th><th>Category</th><th>Type</th><th>Weight (t)</th><th>On hire</th><th>On Hire (hrs)</th><th>Rate &euro;</th><th>Status</th><th>Total &euro;</th><th>Actions</th></tr></thead>
               <tbody id="invRows"></tbody>
             </table></div></div>
             <div class="invtotals">
@@ -846,6 +858,30 @@
       <div class="m-body" style="background:#e9ebef;padding:0"><div class="certwrap"><div class="ga1doc" id="invdoc"></div></div></div>
       <div class="m-foot"><button class="btn grey" data-close>Close</button><button class="btn green" id="invDownload">Download PDF</button></div>
     </div>
+
+    <!-- Confirm / update rate -->
+    <div class="modal" id="mRate" style="display:none;max-width:520px">
+      <div class="m-head"><h3><span class="hw" style="color:var(--red)">%REPORT%</span><span id="rateTitle">Confirm rate</span></h3><button class="x" data-close>&times;</button></div>
+      <div class="m-body">
+        <div class="detail-grid" style="margin-bottom:16px">
+          <div><div class="d-k">Customer</div><div class="d-v" id="rateCust"></div></div>
+          <div><div class="d-k">Docket</div><div class="d-v" id="rateDocket"></div></div>
+          <div><div class="d-k">Material</div><div class="d-v" id="rateMat"></div></div>
+          <div><div class="d-k">Route</div><div class="d-v" id="rateRoute"></div></div>
+        </div>
+        <div class="field"><label>Customer set rate</label><div class="rate-set-box" id="rateCard">—</div></div>
+        <div class="field"><label>Rate &euro; <span class="opt">per load</span></label><input type="number" class="control" id="rateInput" placeholder="0.00"></div>
+        <div style="font-size:12.5px;color:var(--sub);line-height:1.5">Changing this updates the customer&rsquo;s rate card and any matching loads (same material &amp; route) across the app.</div>
+      </div>
+      <div class="m-foot"><button class="btn grey" data-close>Cancel</button><button class="btn red" id="rateSave">Confirm rate</button></div>
+    </div>
+
+    <!-- View docket -->
+    <div class="modal" id="mDocket" style="display:none">
+      <div class="m-head"><h3><span class="hw" style="color:var(--red)">%REPORT%</span><span id="docTitle">Docket</span></h3><button class="x" data-close>&times;</button></div>
+      <div class="m-body"><div class="detail-grid" id="docBody"></div></div>
+      <div class="m-foot"><button class="btn grey" data-close>Close</button><button class="btn ghost" id="docPod">Proof of delivery</button></div>
+    </div>
   </div>
 
   <div class="toast" id="toast"><span class="d"></span><span id="toastMsg"></span></div>
@@ -877,6 +913,7 @@ const I={
   CHECK:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
   DOWNLOAD:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 12l5 5 5-5"/><path d="M5 21h14"/></svg>',
   REPORT:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>',
+  EYE:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
 };
 
 const DATA={
@@ -1549,7 +1586,7 @@ function renderInvDetail(){
   const c=INV[curCust], rows=custDockets(curCust);
   document.getElementById('invRows').innerHTML=rows.length?rows.map(d=>{
     const ridx=c.dockets.indexOf(d);
-    const confirmBtn=d.state==='suggested'?`<button class="confirmbtn" data-confirm="${ridx}">Confirm</button>`:'';
+    const hasRate=(d.rate||d.card);
     return `<tr>
       <td><input type="checkbox" data-sel="${ridx}"></td>
       <td>${d.order}</td>
@@ -1564,10 +1601,13 @@ function renderInvDetail(){
       <td>${esc(d.weight)}</td>
       <td><span class="onhirecell ${d.onHire?'yes':'no'}" title="${d.onHire?'On hire':'Not on hire'}"></span></td>
       <td>${esc(d.hours)}</td>
-      <td><input type="number" class="rateinp${d.state!=='suggested'?' set':''}" data-rate="${ridx}" value="${d.rate||''}" placeholder="${d.card||'set rate'}" title="Customer set rate: ${d.card?money(d.card):'none on file'}"></td>
-      <td><div style="display:flex;align-items:center;gap:6px">${statePill(d.state)}${confirmBtn}</div></td>
-      <td class="pn" data-tot="${ridx}">${money(d.rate)}</td>
-      <td><span class="podlink" data-pod title="Proof of delivery">POD</span></td>
+      <td class="pn"><span class="ratedisp${hasRate?'':' none'}">${hasRate?money(d.rate):'Not set'}</span></td>
+      <td>${statePill(d.state)}</td>
+      <td class="pn">${money(d.rate)}</td>
+      <td><div class="actbtns">
+        <button class="abtn view" data-viewdocket="${ridx}">${I.EYE} View Docket</button>
+        ${d.state==='suggested'?`<button class="abtn confirm" data-rateopen="${ridx}">${I.PLUS_S} Confirm Rate</button>`:`<button class="abtn update" data-rateopen="${ridx}">${I.PENCIL} Update Rate</button>`}
+      </div></td>
     </tr>`;
   }).join(''):`<tr><td colspan="17" class="empty">No dockets for this customer in the date range.</td></tr>`;
   refreshInvTotals();
@@ -1633,19 +1673,31 @@ document.getElementById('sumPdf2').addEventListener('click',()=>{if(curCust==nul
 document.getElementById('sumCsv1').addEventListener('click',sumCsvExport);
 document.getElementById('sumCsv2').addEventListener('click',()=>{if(curCust!=null&&!allActioned(curCust)){toast('Confirm or change all rates before exporting');return;}sumCsvExport();});
 document.getElementById('invDownload').addEventListener('click',()=>toast('Downloading invoice PDF…'));
+let curRateIdx=null;
+function openRateModal(ridx){
+  curRateIdx=ridx; const c=INV[curCust], d=c.dockets[ridx];
+  document.getElementById('rateTitle').textContent=d.state==='suggested'?'Confirm rate':'Update rate';
+  document.getElementById('rateCust').textContent=c.cust;
+  document.getElementById('rateDocket').textContent=d.docket;
+  document.getElementById('rateMat').textContent=d.cat+' · '+d.type;
+  document.getElementById('rateRoute').textContent=d.route;
+  document.getElementById('rateCard').textContent=d.card?money(d.card):'None on file';
+  document.getElementById('rateInput').value=d.rate||'';
+  document.getElementById('rateSave').textContent=d.state==='suggested'?'Confirm rate':'Save rate';
+  openModal('mRate'); setTimeout(()=>document.getElementById('rateInput').focus(),60);
+}
+function openDocket(ridx){
+  const c=INV[curCust], d=c.dockets[ridx];
+  document.getElementById('docTitle').textContent='Docket '+d.docket;
+  document.getElementById('docBody').innerHTML=
+    dRow('Customer',esc(c.cust))+dRow('Driver',esc(d.driver))+dRow('Order',d.order)+dRow('Docket no.',esc(d.docket))+
+    dRow('Sit Ref 1/2',esc(d.sitRef))+dRow('Route',esc(d.route))+dRow('Date',esc(d.date))+dRow('Created',esc(d.time))+
+    dRow('Category',esc(d.cat))+dRow('Type',esc(d.type))+dRow('Weight (t)',esc(d.weight))+dRow('On hire',d.onHire?'Yes':'No')+
+    dRow('On hire (hrs)',esc(d.hours))+dRow('Rate',d.rate?money(d.rate):'Not set')+dRow('Rate status',d.state)+dRow('Customer set rate',d.card?money(d.card):'None on file');
+  openModal('mDocket');
+}
 const invRowsEl=document.getElementById('invRows');
-invRowsEl.addEventListener('input',e=>{
-  const inp=e.target.closest('.rateinp'); if(!inp)return;
-  const ridx=+inp.dataset.rate, d=INV[curCust].dockets[ridx]; d.rate=+inp.value||0;
-  const cell=document.querySelector(`[data-tot="${ridx}"]`); if(cell)cell.textContent=money(d.rate);
-  refreshInvTotals();
-});
-invRowsEl.addEventListener('change',e=>{
-  const inp=e.target.closest('.rateinp');
-  if(inp){ const d=INV[curCust].dockets[+inp.dataset.rate]; const n=commitRate(curCust,d); renderInvDetail();
-    toast(n?('Rate updated — synced to '+n+' matching load'+(n>1?'s':'')+' & the rate card'):'Rate confirmed'); return; }
-  const sel=e.target.closest('[data-sel]'); if(sel){ updateBulk(); return; }
-});
+invRowsEl.addEventListener('change',e=>{ if(e.target.closest('[data-sel]')) updateBulk(); });
 document.getElementById('selAll').addEventListener('change',e=>{
   document.querySelectorAll('#invRows [data-sel]').forEach(cb=>cb.checked=e.target.checked); updateBulk();
 });
@@ -1659,10 +1711,17 @@ document.getElementById('bulkApply').addEventListener('click',()=>{
   sel.forEach(d=>{ d.rate=R; commitRate(curCust,d); }); document.getElementById('bulkRate').value=''; renderInvDetail();
   toast('Rate '+money(R)+' assigned to '+sel.length+' load(s)');
 });
+document.getElementById('rateSave').addEventListener('click',()=>{
+  if(curRateIdx==null)return; const d=INV[curCust].dockets[curRateIdx];
+  d.rate=+document.getElementById('rateInput').value||0; const n=commitRate(curCust,d);
+  closeModal(); renderInvDetail();
+  toast(n?('Rate updated — synced to '+n+' matching load'+(n>1?'s':'')):'Rate confirmed');
+});
+document.getElementById('docPod').addEventListener('click',()=>toast('Opening proof of delivery…'));
 document.addEventListener('click',e=>{
   const vi=e.target.closest('[data-inv]'); if(vi){openInvDetail(+vi.dataset.inv);return;}
-  const cf=e.target.closest('[data-confirm]'); if(cf){ INV[curCust].dockets[+cf.dataset.confirm].state='confirmed'; renderInvDetail(); toast('Load confirmed'); return; }
-  const pod=e.target.closest('[data-pod]'); if(pod){toast('Opening proof of delivery…');return;}
+  const vd=e.target.closest('[data-viewdocket]'); if(vd){openDocket(+vd.dataset.viewdocket);return;}
+  const ro=e.target.closest('[data-rateopen]'); if(ro){openRateModal(+ro.dataset.rateopen);return;}
 });
 renderSummary();
 
