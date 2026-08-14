@@ -418,6 +418,16 @@
   .regicon.del{color:var(--red)}.regicon.del:hover{background:#fdeae9;border-color:var(--red)}
   .regicon svg{width:15px;height:15px}
   .regchk{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--ink-soft);padding-bottom:10px;cursor:pointer}
+  /* registrations table: fit across the page, no horizontal scroll */
+  [data-page="registrations"] .ptbl{min-width:0;table-layout:auto;font-size:12px}
+  [data-page="registrations"] .ptbl th{white-space:normal;padding:9px 5px;font-size:10px}
+  [data-page="registrations"] .ptbl td{white-space:normal;padding:8px 5px;vertical-align:middle}
+  [data-page="registrations"] .regbtn{padding:5px 8px;font-size:10.5px;gap:4px}
+  [data-page="registrations"] .countbadge{min-width:17px;height:17px;font-size:10px;margin-left:4px}
+  [data-page="registrations"] .rstatus{font-size:10.5px;padding:3px 8px}
+  [data-page="registrations"] .regacts{gap:5px}
+  [data-page="registrations"] .regicon{width:28px;height:28px}
+  [data-page="registrations"] .regicon svg{width:13px;height:13px}
 
   /* toast */
   .toast{position:fixed;right:26px;bottom:26px;background:#20242a;color:#fff;padding:14px 20px;border-radius:10px;font-size:14.5px;font-weight:600;z-index:80;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px);transition:.28s;box-shadow:0 14px 34px -10px rgba(0,0,0,.5)}
