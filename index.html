@@ -460,7 +460,7 @@
         <a class="item" data-stub="Dashboard"><span class="ic">%TACHO%</span>Dashboard</a>
         <a class="item active" data-nav="jobcards"><span class="ic">%WRENCH%</span>Workshop Job Cards</a>
 
-        <div class="group open">
+        <div class="group">
           <button class="ghead"><span class="ic">%MENU%</span><span class="gt">User Management</span><span class="car">%CARET%</span></button>
           <div class="gbody">
             <a class="sub" data-stub="Admin"><span class="cr">%CHEVR%</span>Admin</a>
@@ -469,7 +469,7 @@
           </div>
         </div>
 
-        <div class="group open">
+        <div class="group">
           <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Truck Management</span><span class="car">%CARET%</span></button>
           <div class="gbody">
             <a class="sub" data-nav="registrations"><span class="cr">%CHEVR%</span>Registrations</a>
@@ -480,7 +480,7 @@
           </div>
         </div>
 
-        <div class="group open">
+        <div class="group">
           <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Load Management</span><span class="car">%CARET%</span></button>
           <div class="gbody">
             <a class="sub" data-stub="Customers"><span class="cr">%CHEVR%</span>Customers</a>
@@ -488,14 +488,14 @@
           </div>
         </div>
 
-        <div class="group open">
+        <div class="group">
           <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Parts</span><span class="car">%CARET%</span></button>
           <div class="gbody">
             <a class="sub" data-nav="parts"><span class="cr">%CHEVR%</span>Parts</a>
           </div>
         </div>
 
-        <div class="group open">
+        <div class="group">
           <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Reports</span><span class="car">%CARET%</span></button>
           <div class="gbody">
             <a class="sub" data-stub="Invoicing"><span class="cr">%CHEVR%</span>Invoicing</a>
@@ -505,7 +505,7 @@
           </div>
         </div>
 
-        <div class="group open">
+        <div class="group">
           <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Plant Machinery</span><span class="car">%CARET%</span></button>
           <div class="gbody">
             <a class="sub" data-stub="Machines"><span class="cr">%CHEVR%</span>Machines</a>
@@ -516,10 +516,30 @@
           </div>
         </div>
 
-        <div class="group open">
+        <div class="group">
           <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Holidays</span><span class="car">%CARET%</span></button>
           <div class="gbody">
             <a class="sub" data-stub="Holidays"><span class="cr">%CHEVR%</span>Holidays</a>
+          </div>
+        </div>
+
+        <div class="group">
+          <button class="ghead"><span class="ic">%SHIELD%</span><span class="gt">Health &amp; Safety</span><span class="car">%CARET%</span></button>
+          <div class="gbody">
+            <a class="sub" data-stub="Personnel"><span class="cr">%CHEVR%</span>Personnel</a>
+            <a class="sub" data-stub="Subcontractors Personnel"><span class="cr">%CHEVR%</span>Subcontractors Personnel</a>
+            <a class="sub" data-stub="Induction"><span class="cr">%CHEVR%</span>Induction</a>
+            <a class="sub" data-stub="Accident/Incident Investigation"><span class="cr">%CHEVR%</span>Accident/Incident Investigation</a>
+            <a class="sub" data-stub="Sites"><span class="cr">%CHEVR%</span>Sites</a>
+            <a class="sub" data-stub="Safety Violations"><span class="cr">%CHEVR%</span>Safety Violations</a>
+            <a class="sub" data-stub="SPAS"><span class="cr">%CHEVR%</span>SPAS</a>
+            <a class="sub" data-stub="SDSS"><span class="cr">%CHEVR%</span>SDSS</a>
+            <a class="sub" data-stub="Policy"><span class="cr">%CHEVR%</span>Policy</a>
+            <a class="sub" data-stub="Procedure"><span class="cr">%CHEVR%</span>Procedure</a>
+            <a class="sub" data-stub="First Aid Report Form"><span class="cr">%CHEVR%</span>First Aid Report Form</a>
+            <a class="sub" data-stub="Emergency Response Plan"><span class="cr">%CHEVR%</span>Emergency Response Plan</a>
+            <a class="sub" data-stub="Safety Statement"><span class="cr">%CHEVR%</span>Safety Statement</a>
+            <a class="sub" data-stub="Insurance"><span class="cr">%CHEVR%</span>Insurance</a>
           </div>
         </div>
 
@@ -987,6 +1007,7 @@ const I={
   REPORT:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>',
   EYE:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
   TRUCK:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V6H2v11h2"/><circle cx="6.5" cy="17.5" r="1.7"/><circle cx="16.5" cy="17.5" r="1.7"/><path d="M14 9h4l3 4v4h-2"/></svg>',
+  SHIELD:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3 7.6-8 9-5-1.4-8-4.5-8-9V6l8-3Z"/><path d="M9 12l2 2 4-4"/></svg>',
 };
 
 const DATA={
