@@ -53,7 +53,7 @@
   .snav .ic svg{width:18px;height:18px}
   .item{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;border:0;background:none;text-align:left;font-family:inherit;letter-spacing:-.01em}
   .item:hover{background:rgba(0,0,0,.12)}
-  .item.active{background:#141414}
+  .item.active{background:rgba(0,0,0,.18)}
   .group{border-top:1px solid rgba(255,255,255,.12)}
   .ghead{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;background:var(--side-head);color:#fff;font-size:15px;font-weight:600;border:0;cursor:pointer;font-family:inherit;letter-spacing:-.01em}
   .ghead:hover{background:rgba(255,255,255,.11)}
@@ -458,7 +458,6 @@
       </div>
       <nav class="snav">
         <a class="item" data-stub="Dashboard"><span class="ic">%TACHO%</span>Dashboard</a>
-        <a class="item active" data-nav="jobcards"><span class="ic">%WRENCH%</span>Workshop Job Cards</a>
 
         <div class="group">
           <button class="ghead"><span class="ic">%MENU%</span><span class="gt">User Management</span><span class="car">%CARET%</span></button>
@@ -515,6 +514,8 @@
             <a class="sub" data-nav="ga1"><span class="cr">%CHEVR%</span>GA1 Certificate</a>
           </div>
         </div>
+
+        <a class="item" data-nav="jobcards"><span class="ic">%WRENCH%</span>Workshop Job Cards</a>
 
         <div class="group">
           <button class="ghead"><span class="ic">%MENU%</span><span class="gt">Holidays</span><span class="car">%CARET%</span></button>
